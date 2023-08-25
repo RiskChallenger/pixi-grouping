@@ -19,7 +19,6 @@ export class RiskContainer extends Container {
   }
 
   public click(e: FederatedPointerEvent): void {
-    this.position = this.getGlobalPosition();
     this.setRelativeMousePosition(e.client);
     this.active = true;
   }
