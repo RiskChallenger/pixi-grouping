@@ -13,6 +13,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "@riskchallenger/open-components": "^1.6.0",
     "pixi.js": "^7.2.4"
   }
 }
