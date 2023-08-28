@@ -46,30 +46,29 @@ export class Group extends RiskContainer {
   }
 
   public getBounds(): Rectangle {
-    if (!this.risks) {
-      return super.getBounds();
-    }
+    return super.getBounds();
+    // if (!this.risks) {
+    //   return super.getBounds();
+    // }
 
-    const allCorners = this.risks
-      .map((r) => r.getBounds())
-      .map((r) => {
-        return new Rectangle(r.x, r.y, r.x + r.width, r.y + r.height);
-      });
-    console.log(allCorners);
+    // const allCorners = this.risks
+    //   .map((r) => r.getBounds())
+    //   .map((r) => {
+    //     return new Rectangle(r.x, r.y, r.x + r.width, r.y + r.height);
+    //   });
 
-    const bounds = new Rectangle(
-      Math.min(...allCorners.map((r) => r.x)),
-      Math.min(...allCorners.map((r) => r.y)),
-      Math.max(...allCorners.map((r) => r.width)),
-      Math.max(...allCorners.map((r) => r.height))
-    );
-    console.log(bounds);
-    return new Rectangle(
-      bounds.x,
-      bounds.y,
-      bounds.width - bounds.x,
-      bounds.height - bounds.y
-    );
+    // const bounds = new Rectangle(
+    //   Math.min(...allCorners.map((r) => r.x)),
+    //   Math.min(...allCorners.map((r) => r.y)),
+    //   Math.max(...allCorners.map((r) => r.width)),
+    //   Math.max(...allCorners.map((r) => r.height))
+    // );
+    // return new Rectangle(
+    //   bounds.x,
+    //   bounds.y,
+    //   bounds.width - bounds.x,
+    //   bounds.height - bounds.y
+    // );
   }
 
   public updateName(): void {

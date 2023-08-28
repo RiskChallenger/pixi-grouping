@@ -29,7 +29,7 @@ export class RiskContainer extends Container {
       e.global.y - (this.relativeMousePosition?.y ?? 0)
     );
 
-    this.position.set(pos.x, pos.y);
+    this.parent.toLocal(pos, undefined, this.position);
   }
 
   public end(_: FederatedPointerEvent) {

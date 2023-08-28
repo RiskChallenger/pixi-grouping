@@ -43,19 +43,21 @@ export class RiskBlock extends RiskContainer {
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
     );
-    if (
-      pos.x > 0 &&
-      pos.x + this.width < screen.width &&
-      pos.y > 0 &&
-      pos.y + this.height < screen.height
-    ) {
-      this.position.set(pos.x, pos.y);
-    } else {
-      this.setRelativeMousePosition(e.client);
-    }
-    super.drag(e, screen);
     if (this.hasGroup()) {
+      this.parent.toLocal(pos, this.group!, this.position);
       this.group?.updateName();
+    } else {
+      if (
+        pos.x > 0 &&
+        pos.x + this.width < screen.width &&
+        pos.y > 0 &&
+        pos.y + this.height < screen.height
+      ) {
+        this.parent.toLocal(pos, undefined, this.position);
+      } else {
+        this.setRelativeMousePosition(e.client);
+      }
+      // super.drag(e, screen);
     }
   }
 
