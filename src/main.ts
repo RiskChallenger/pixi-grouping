@@ -1,4 +1,4 @@
-import { Application, FederatedPointerEvent } from "pixi.js";
+import { Application, FederatedPointerEvent, Point } from "pixi.js";
 import { Group } from "./classes/Group";
 import { RiskBlock } from "./classes/Risk";
 import "./style.css";
@@ -88,18 +88,22 @@ function mousemove(e: FederatedPointerEvent) {
     } else if (!activeRisk.inGroup()) {
       // Risk was dragged out of its group
       const formerGroup = activeRisk.getGroup();
+      const newPos = activeRisk.parent.toGlobal(new Point(0, 0));
       formerGroup?.removeRisk(activeRisk);
       activeRisk.removeFromGroup();
       app.stage.addChild(activeRisk);
+      activeRisk.parent.toLocal(e.global, undefined, activeRisk.position);
       looseRisks.push(activeRisk);
 
       // If the group only has 1 member left, disbandon it
       if (formerGroup?.getLength() === 1) {
         groups = groups.filter((g) => g !== formerGroup);
         const lastMember = formerGroup.getOnlyMember();
+        const pos2 = lastMember.parent.toGlobal(new Point(0, 0));
         formerGroup.destroy();
         lastMember.removeFromGroup();
         app.stage.addChild(lastMember);
+        lastMember.parent.toLocal(e.global, undefined, lastMember.position);
         looseRisks.push(lastMember);
       }
     }

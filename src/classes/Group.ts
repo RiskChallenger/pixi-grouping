@@ -85,9 +85,12 @@ export class Group extends RiskContainer {
     const bounds = this.getBounds();
 
     // console.timeEnd("getBounds");
-    let pos = new Point(
-      bounds.x + bounds.width / 2 - this.nameText.width / 2,
-      bounds.y - 60
+    let pos = this.toLocal(
+      new Point(
+        bounds.x + bounds.width / 2 - this.nameText.width / 2,
+        bounds.y - 60
+      ),
+      undefined
     );
     // this.nameText.toLocal(pos, undefined, this.nameText.position);
     this.nameText = new Text("random");

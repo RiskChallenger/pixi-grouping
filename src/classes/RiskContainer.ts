@@ -18,8 +18,6 @@ export class RiskContainer extends Container {
   }
 
   public drag(e: FederatedPointerEvent) {
-    // console.log(this.getBounds());
-
     const pos = new Point(
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
@@ -68,9 +66,10 @@ export class RiskContainer extends Container {
     this.boundaryGraphic.beginFill("#ffffff", 0);
 
     const bounds = this.getBounds();
+    const pos = this.toLocal(new Point(bounds.x, bounds.y), undefined);
     this.boundaryGraphic.drawRoundedRect(
-      -indicatorMargin / 2,
-      -indicatorMargin / 2,
+      pos.x - indicatorMargin / 2,
+      pos.y - indicatorMargin / 2,
       bounds.width + indicatorMargin,
       bounds.height + indicatorMargin,
       10000
