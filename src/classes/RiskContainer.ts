@@ -1,10 +1,4 @@
-import {
-  Container,
-  FederatedPointerEvent,
-  Graphics,
-  Point,
-  Rectangle,
-} from "pixi.js";
+import { Container, FederatedPointerEvent, Graphics, Point } from "pixi.js";
 
 export class RiskContainer extends Container {
   protected boundaryGraphic = new Graphics();
@@ -23,7 +17,9 @@ export class RiskContainer extends Container {
     this.active = true;
   }
 
-  public drag(e: FederatedPointerEvent, screen: Rectangle) {
+  public drag(e: FederatedPointerEvent) {
+    // console.log(this.getBounds());
+
     const pos = new Point(
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
@@ -72,10 +68,9 @@ export class RiskContainer extends Container {
     this.boundaryGraphic.beginFill("#ffffff", 0);
 
     const bounds = this.getBounds();
-
     this.boundaryGraphic.drawRoundedRect(
-      bounds.x - indicatorMargin / 2,
-      bounds.y - indicatorMargin / 2,
+      -indicatorMargin / 2,
+      -indicatorMargin / 2,
       bounds.width + indicatorMargin,
       bounds.height + indicatorMargin,
       10000

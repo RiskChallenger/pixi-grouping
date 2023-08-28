@@ -38,14 +38,14 @@ export class RiskBlock extends RiskContainer {
     this.y = y;
   }
 
-  public drag(e: FederatedPointerEvent, screen: Rectangle) {
+  public drag(e: FederatedPointerEvent) {
     const pos = new Point(
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
     );
     if (this.hasGroup()) {
-      this.parent.toLocal(pos, this.group!, this.position);
       this.group?.updateName();
+      this.parent.toLocal(pos, this.group!, this.position);
     } else {
       if (
         pos.x > 0 &&
@@ -57,7 +57,6 @@ export class RiskBlock extends RiskContainer {
       } else {
         this.setRelativeMousePosition(e.client);
       }
-      // super.drag(e, screen);
     }
   }
 

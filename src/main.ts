@@ -11,16 +11,18 @@ app.stage.eventMode = "static";
 app.stage.hitArea = app.screen;
 app.stage.on("pointerup", end);
 app.stage.on("pointerupoutside", end);
-app.stage.on("pointermove", drag);
+app.stage.on("pointermove", mousemove);
 document.body.appendChild(app.view);
 
 const risks: RiskBlock[] = [];
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 2; i++) {
   risks.push(randomRisk());
 }
 
-let groups: Group[] = [];
-let looseRisks = risks;
+const g = new Group("random", risks);
+risks.forEach((r) => r.setGroup(g));
+let groups: Group[] = [g];
+let looseRisks: RiskBlock[] = [];
 
 app.stage.addChild(...looseRisks, ...groups);
 
@@ -38,17 +40,17 @@ function end(e: FederatedPointerEvent) {
 /* Called on every mouse move
  * Would be better to only listen to this event if there's an active risk
  */
-function drag(e: FederatedPointerEvent) {
+function mousemove(e: FederatedPointerEvent) {
   const activeRisk = risks.find((r) => r.isActive());
   if (!activeRisk) {
     const activeGroup = groups.find((g) => g.isActive());
     if (activeGroup) {
-      activeGroup.drag(e, app.screen);
+      activeGroup.drag(e);
       [...groups, ...looseRisks].forEach((g) => g.showBoundary());
     }
   }
   if (activeRisk) {
-    activeRisk.drag(e, app.screen);
+    activeRisk.drag(e);
     [...groups, ...looseRisks].forEach((g) => g.showBoundary());
     if (!activeRisk.hasGroup()) {
       groups.forEach((g) => {
@@ -86,7 +88,6 @@ function drag(e: FederatedPointerEvent) {
     } else if (!activeRisk.inGroup()) {
       // Risk was dragged out of its group
       const formerGroup = activeRisk.getGroup();
-      formerGroup!.position = { x: 0, y: 0 };
       formerGroup?.removeRisk(activeRisk);
       activeRisk.removeFromGroup();
       app.stage.addChild(activeRisk);
@@ -112,7 +113,7 @@ function randomRisk(): RiskBlock {
   return new RiskBlock(
     randomName + randomName,
     Math.floor(Math.random() * 0xffffff),
-    Math.max(10, Math.random() * app.screen.width - 400),
-    Math.max(10, Math.random() * app.screen.height - 300)
+    Math.max(10, Math.random() * 30),
+    Math.max(10, Math.random() * 50) + 300
   );
 }
