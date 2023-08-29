@@ -101,4 +101,9 @@ export class RiskBlock extends RiskContainer {
     );
     this.blockGraphic.endFill();
   }
+
+  // TODO TEMP
+  public deactivate(): void {
+    this.active = false;
+  }
 }

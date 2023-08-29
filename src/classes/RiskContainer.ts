@@ -78,7 +78,7 @@ export class RiskContainer extends Container {
     this.boundaryGraphic.endFill();
   }
 
-  protected setRelativeMousePosition(p: Point) {
+  public setRelativeMousePosition(p: Point) {
     this.relativeMousePosition = new Point(p.x - this.x, p.y - this.y);
   }
 }

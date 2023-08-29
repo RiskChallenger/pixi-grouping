@@ -1,4 +1,4 @@
-import { Application, FederatedPointerEvent, Point } from "pixi.js";
+import { Application, FederatedPointerEvent } from "pixi.js";
 import { Group } from "./classes/Group";
 import { RiskBlock } from "./classes/Risk";
 import "./style.css";
@@ -15,7 +15,7 @@ app.stage.on("pointermove", mousemove);
 document.body.appendChild(app.view);
 
 const risks: RiskBlock[] = [];
-for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 3; i++) {
   risks.push(randomRisk());
 }
 
@@ -59,9 +59,18 @@ function mousemove(e: FederatedPointerEvent) {
           // Dragged into an existing group
           // Remove risk from stage, will be shown via its (new) group
           activeRisk.hideBoundary();
+
+          // activeRisk.deactivate();
           app.stage.removeChild(activeRisk);
           g.addRisk(activeRisk);
+          activeRisk.parent.toLocal(
+            activeRisk.position,
+            undefined,
+            activeRisk.position
+          );
+          activeRisk.setRelativeMousePosition(e.global);
           activeRisk.setGroup(g);
+          g.updateName();
           // Risk no longer loose
           looseRisks = looseRisks.filter((r) => r !== activeRisk);
         }
@@ -88,22 +97,29 @@ function mousemove(e: FederatedPointerEvent) {
     } else if (!activeRisk.inGroup()) {
       // Risk was dragged out of its group
       const formerGroup = activeRisk.getGroup();
-      const newPos = activeRisk.parent.toGlobal(new Point(0, 0));
+      const newPos = activeRisk.parent.toGlobal(activeRisk.position);
       formerGroup?.removeRisk(activeRisk);
       activeRisk.removeFromGroup();
       app.stage.addChild(activeRisk);
-      activeRisk.parent.toLocal(e.global, undefined, activeRisk.position);
+      activeRisk.parent.toLocal(newPos, undefined, activeRisk.position);
+      activeRisk.setRelativeMousePosition(e.global);
+      // activeRisk.parent.toLocal(e.global, undefined, activeRisk.position);
       looseRisks.push(activeRisk);
+      // activeRisk.deactivate();
 
       // If the group only has 1 member left, disbandon it
       if (formerGroup?.getLength() === 1) {
         groups = groups.filter((g) => g !== formerGroup);
         const lastMember = formerGroup.getOnlyMember();
-        const pos2 = lastMember.parent.toGlobal(new Point(0, 0));
+        const lastMemberPos = lastMember.parent.toGlobal(lastMember.position);
         formerGroup.destroy();
         lastMember.removeFromGroup();
         app.stage.addChild(lastMember);
-        lastMember.parent.toLocal(e.global, undefined, lastMember.position);
+        lastMember.parent.toLocal(
+          lastMemberPos,
+          undefined,
+          lastMember.position
+        );
         looseRisks.push(lastMember);
       }
     }
