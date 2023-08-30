@@ -17,7 +17,7 @@ export class RiskContainer extends Container {
     this.active = true;
   }
 
-  public drag(e: FederatedPointerEvent) {
+  public move(e: FederatedPointerEvent) {
     const pos = new Point(
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
@@ -62,7 +62,7 @@ export class RiskContainer extends Container {
 
   private createBoundaryGraphic(visible = false): void {
     const indicatorMargin = 150;
-    this.boundaryGraphic.lineStyle(1, "#ccc");
+    this.boundaryGraphic.lineStyle(1, "#333");
     this.boundaryGraphic.beginFill("#ffffff", 0);
 
     const bounds = this.getBounds();
