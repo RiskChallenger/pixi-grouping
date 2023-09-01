@@ -87,9 +87,9 @@ export class Group extends DragContainer {
     this.unsetFusingGroup();
   }
 
-  public updateBoundary(): void {
+  public updateBoundary(visible = true): void {
     this.removeChild(this.nameText);
-    super.updateBoundary();
+    super.updateBoundary(visible);
     const bounds = this.getBounds();
 
     let pos = this.toLocal(

@@ -6,7 +6,6 @@ import {
   Rectangle,
 } from "pixi.js";
 import { Corners, getCornersFromBounds } from "../helpers";
-import { Block } from "./Block";
 import { Group } from "./Group";
 
 export class DragContainer extends Container {
@@ -31,6 +30,11 @@ export class DragContainer extends Container {
   }
 
   public move(e: FederatedPointerEvent) {
+    if (this.nearFusingGroup()) {
+      this.fusingGroup?.setBoundaryExtension(this.getBounds());
+      this.fusingGroup?.updateBoundary();
+    }
+
     const pos = new Point(
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
@@ -66,10 +70,6 @@ export class DragContainer extends Container {
   }
 
   public updateBoundary(visible = true): void {
-    if (this instanceof Block) {
-      console.log("update block boundary");
-    }
-
     this.boundaryGraphic.clear();
     this.createBoundaryGraphic(visible);
   }

@@ -48,6 +48,8 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         this.stage.removeChild(block);
         g.addBlock(block);
         block.addToGroup(g);
+        block.parent.toLocal(block.position, undefined, block.position);
+        g.updateBoundary(false);
         return true;
       }
     });
@@ -63,6 +65,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         // Block no longer loose
         this.looseBlocks = this.looseBlocks.filter((b) => b !== lb);
         this.groups.push(newGroup);
+        newGroup.updateBoundary(false);
         return true;
       }
     });
@@ -142,25 +145,34 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     const active = this.getActive();
     if (active) {
       active?.move(e);
-      this.showBoundaries();
+    }
+    if (active instanceof Block) {
+      [
+        ...this.groups,
+        ...this.looseBlocks.filter((lb) => !lb.nearFusing()),
+      ].forEach((g) => g.showBoundary());
+    } else if (active instanceof Group) {
+      this.groups.forEach((g) => g.showBoundary());
     }
 
     if (active instanceof Group) {
       if (active.hasFusingGroup() && !active.nearFusingGroup()) {
         active.unsetFusingGroup();
       }
-      this.groups
-        .filter((g) => g !== active)
-        .find((g) => {
-          // Dragged into a group
-          if (g.isNearOtherGroup(active)) {
-            g.setBoundaryExtension(active.getBounds());
-            active.hideBoundary();
-            active.setFusingGroup(g);
-            console.log("colliding groups");
-            return true;
-          }
-        });
+      if (!active.nearFusingGroup()) {
+        this.groups
+          .filter((g) => g !== active)
+          .find((g) => {
+            // Dragged into a group
+            if (g.isNearOtherGroup(active)) {
+              g.setBoundaryExtension(active.getBounds());
+              active.hideBoundary();
+              active.setFusingGroup(g);
+              console.log("colliding groups");
+              return true;
+            }
+          });
+      }
     }
     if (active instanceof Block) {
       if (active.hasFusingGroup() && !active.nearFusingGroup()) {
@@ -224,13 +236,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         active.hideBoundary();
       }
     }
-  }
-
-  private showBoundaries(): void {
-    [
-      ...this.groups,
-      ...this.looseBlocks.filter((lb) => !lb.nearFusing()),
-    ].forEach((g) => g.showBoundary());
   }
 
   private getActive(): Block | Group | undefined {

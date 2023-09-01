@@ -28,6 +28,11 @@ export class Block extends DragContainer {
   }
 
   public move(e: FederatedPointerEvent) {
+    if (this.nearFusingBlock()) {
+      this.fusingBlock?.setBoundaryExtension(this.getBounds());
+      this.fusingBlock?.updateBoundary();
+    }
+
     const pos = new Point(
       e.global.x - (this.relativeMousePosition?.x ?? 0),
       e.global.y - (this.relativeMousePosition?.y ?? 0)
@@ -38,14 +43,6 @@ export class Block extends DragContainer {
       this.parent.toLocal(pos, this.group!, this.position);
     } else {
       this.parent.toLocal(pos, undefined, this.position);
-    }
-    if (this.nearFusingGroup()) {
-      this.fusingGroup?.setBoundaryExtension(this.getBounds());
-      this.fusingGroup?.updateBoundary();
-    }
-    if (this.nearFusingBlock()) {
-      this.fusingBlock?.setBoundaryExtension(this.getBounds());
-      this.fusingBlock?.updateBoundary();
     }
   }
 
