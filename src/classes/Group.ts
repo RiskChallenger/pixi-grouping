@@ -5,7 +5,6 @@ import { DragContainer } from "./DragContainer";
 export class Group extends DragContainer {
   private blocks: Block[] = [];
   private nameText: Text;
-  private nameTextStyle: Partial<ITextStyle>;
 
   constructor(
     name: string,
@@ -16,7 +15,6 @@ export class Group extends DragContainer {
     this.blocks = blocks;
     this.addChild(...blocks);
 
-    this.nameTextStyle = nameStyle;
     this.nameText = new Text(name, nameStyle);
     this.addChild(this.nameText);
     this.updateBoundary();

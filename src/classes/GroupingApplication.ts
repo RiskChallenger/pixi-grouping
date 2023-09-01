@@ -233,19 +233,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     ].forEach((g) => g.showBoundary());
   }
 
-  private hideBoundaries(): void {
-    [...this.groups, ...this.looseBlocks].forEach((g) => g.hideBoundary());
-  }
-
   private getActive(): Block | Group | undefined {
     return [...this.blocks, ...this.groups].find((el) => el.isActive());
   }
-
-  // enum ActiveState {
-  //   Loose,
-  //   InGroup,
-  //   AwayFromGroup,
-  //   FusingWithGroup,
-  //   FusingWithBlock
-  // }
 }
