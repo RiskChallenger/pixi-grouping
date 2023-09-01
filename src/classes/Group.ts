@@ -1,84 +1,116 @@
-import { FederatedPointerEvent, Point, Text } from "pixi.js";
-import { Risk } from "./Risk";
-import { RiskContainer } from "./RiskContainer";
-export class Group extends RiskContainer {
-  private risks: Risk[] = [];
+import { ITextStyle, Point, Text } from "pixi.js";
+import { Corners, getCornersFromBounds } from "../helpers";
+import { Block } from "./Block";
+import { DragContainer } from "./DragContainer";
+export class Group extends DragContainer {
+  private blocks: Block[] = [];
   private nameText: Text;
+  private nameTextStyle: Partial<ITextStyle>;
 
-  constructor(name: string, risks: Risk[]) {
+  constructor(
+    name: string,
+    blocks: Block[] = [],
+    nameStyle: Partial<ITextStyle> = { fill: "#fff" }
+  ) {
     super();
-    this.risks = risks;
-    this.addChild(...risks);
+    this.blocks = blocks;
+    this.addChild(...blocks);
 
-    this.nameText = new Text(name, {
-      fontFamily: "Roboto",
-      fontSize: 16,
-      fontWeight: "lighter",
-    });
+    this.nameTextStyle = nameStyle;
+    this.nameText = new Text(name, nameStyle);
     this.addChild(this.nameText);
-    this.updateName();
+    this.updateBoundary();
     this.nameText.cursor = "pointer";
     this.nameText.eventMode = "static";
     this.nameText.on("pointerdown", this.click, this);
   }
 
-  public addRisk(risk: Risk) {
-    this.risks.push(risk);
-    this.addChild(risk);
-    this.updateName();
+  public addBlock(block: Block) {
+    this.blocks.push(block);
+    this.addChild(block);
+    this.updateBoundary();
   }
 
-  public move(e: FederatedPointerEvent) {
-    super.move(e);
-  }
-
-  public removeRisk(risk: Risk) {
-    this.risks = this.risks.filter((r) => r !== risk);
-    this.removeChild(risk);
-    this.updateName();
+  public removeBlock(block: Block) {
+    this.blocks = this.blocks.filter((b) => b !== block);
+    this.removeChild(block);
+    this.updateBoundary();
   }
 
   public getLength(): number {
-    return this.risks.length;
+    return this.blocks.length;
   }
 
-  public isNearMembers(risk: Risk): boolean {
-    return this.risks.filter((r) => r !== risk && risk.isNear(r)).length > 0;
+  public isNearMembers(other: DragContainer): boolean {
+    return this.blocks.filter((r) => r !== other && other.isNear(r)).length > 0;
   }
 
   public isNearOtherGroup(group: Group): boolean {
-    return this.risks.some((r) => group.isNearMembers(r));
+    return this.blocks.some((b) => group.isNearMembers(b));
   }
 
-  public getOnlyMember(): Risk {
-    if (this.risks.length > 1) {
+  public getOnlyMember(): Block {
+    if (this.blocks.length > 1) {
       throw new Error("Has multiple members");
     }
-    return this.risks[0];
+    return this.blocks[0];
   }
 
-  public updateName(): void {
+  public getCorners(): Corners {
+    if (!this.blocks) {
+      return super.getCorners();
+    }
+
+    const allBlockCorners = this.blocks
+      .filter((b) => !b.isAwayFromGroup())
+      .map((b) => getCornersFromBounds(b.getBounds()));
+
+    return {
+      left: Math.min(...allBlockCorners.map((c) => c.left)),
+      top: Math.min(...allBlockCorners.map((c) => c.top)),
+      right: Math.max(...allBlockCorners.map((c) => c.right)),
+      bottom: Math.max(...allBlockCorners.map((c) => c.bottom)),
+    };
+  }
+
+  public fuse(): void {
+    if (!this.fusingGroup) {
+      throw new Error("Cannot fuse without fusing group");
+    }
+    console.log("fuse groups");
+
+    this.blocks.forEach((b) => {
+      this.removeBlock(b);
+      this.fusingGroup?.addBlock(b);
+      b.toGlobal(this.parent.toLocal(this.position, undefined), b.position);
+      b.addToGroup(this.fusingGroup!);
+    });
+
+    this.unsetFusingGroup();
+  }
+
+  public updateBoundary(): void {
     this.removeChild(this.nameText);
-    this.updateBoundary();
+    super.updateBoundary();
     const bounds = this.getBounds();
 
     let pos = this.toLocal(
       new Point(
         bounds.x + bounds.width / 2 - this.nameText.width / 2,
-        bounds.y - 30
+        bounds.y - 60
       ),
       undefined
     );
-    this.nameText = new Text("random", {
-      fontFamily: "Roboto",
-      fontSize: 16,
-      fontWeight: "lighter",
-    });
+    // this.nameText = new Text("random", this.nameTextStyle);
     this.nameText.x = pos.x;
     this.nameText.y = pos.y;
-    this.nameText.cursor = "pointer";
-    this.nameText.eventMode = "static";
-    this.nameText.on("pointerdown", this.click, this);
+    this.nameText.visible = true;
+    // this.nameText.cursor = "pointer";
+    // this.nameText.eventMode = "static";
+    // this.nameText.on("pointerdown", this.click, this);
     this.addChild(this.nameText);
+    if (this.blocks.filter((b) => !b.isAwayFromGroup()).length === 1) {
+      this.nameText.visible = false;
+    }
   }
 }
