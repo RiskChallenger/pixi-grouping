@@ -10,7 +10,7 @@ import { Group } from "./Group";
 
 export class DragContainer extends Container {
   protected boundaryGraphic = new Graphics();
-  protected relativeMousePosition: Point | undefined;
+  protected relativeMousePosition: Point | undefined = new Point();
   // True if the mouse is currently pressed down on this
   protected active = false;
   // Group this will fuse with on mouse up
@@ -25,7 +25,7 @@ export class DragContainer extends Container {
   }
 
   public click(e: FederatedPointerEvent): void {
-    this.setRelativeMousePosition(e.client);
+    this.setRelativeMousePosition(e.global);
     this.active = true;
   }
 
@@ -79,8 +79,9 @@ export class DragContainer extends Container {
   }
 
   public setRelativeMousePosition(p: Point) {
-    const bounds = this.getBounds();
-    this.relativeMousePosition = new Point(p.x - bounds.x, p.y - bounds.y);
+    this.parent.toLocal(p, null, this.relativeMousePosition);
+    this.relativeMousePosition.x -= this.x;
+    this.relativeMousePosition.y -= this.y;
   }
 
   public setBoundaryExtension(area: Rectangle): void {
