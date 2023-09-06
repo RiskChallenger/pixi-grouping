@@ -29,19 +29,6 @@ export class DragContainer extends Container {
     this.active = true;
   }
 
-  public move(e: FederatedPointerEvent) {
-    if (this.nearFusingGroup()) {
-      this.fusingGroup?.setBoundaryExtension(this.getBounds());
-      this.fusingGroup?.updateBoundary();
-    }
-
-    const pos = new Point(
-      e.global.x - (this.relativeMousePosition?.x ?? 0),
-      e.global.y - (this.relativeMousePosition?.y ?? 0)
-    );
-    this.parent.toLocal(pos, undefined, this.position);
-  }
-
   public end() {
     this.active = false;
   }
@@ -92,7 +79,8 @@ export class DragContainer extends Container {
   }
 
   public setRelativeMousePosition(p: Point) {
-    this.relativeMousePosition = new Point(p.x - this.x, p.y - this.y);
+    const bounds = this.getBounds();
+    this.relativeMousePosition = new Point(p.x - bounds.x, p.y - bounds.y);
   }
 
   public setBoundaryExtension(area: Rectangle): void {
@@ -155,7 +143,7 @@ export class DragContainer extends Container {
       pos.y - indicatorMargin / 2,
       bounds.width + indicatorMargin,
       bounds.height + indicatorMargin,
-      10000
+      10
     );
     this.boundaryGraphic.visible = visible;
     this.boundaryGraphic.endFill();

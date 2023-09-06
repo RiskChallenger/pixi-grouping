@@ -1,3 +1,4 @@
+import { Viewport } from "pixi-viewport";
 import {
   Application,
   FederatedPointerEvent,
@@ -14,15 +15,23 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   private looseBlocks: Block[] = [];
   private groups: Group[] = [];
 
+  private viewport: Viewport;
+
   constructor(options: Partial<IApplicationOptions> | undefined) {
     super(options);
 
-    this.stage.eventMode = "static";
-    this.stage.hitArea = this.screen;
-    this.stage.on("pointerup", this.pointerup, this);
-    this.stage.on("pointerupoutside", this.pointerup, this);
-    this.stage.on("pointermove", this.mousemove, this);
+    this.viewport = new Viewport({
+      events: this.renderer.events,
+    });
+    this.viewport.drag();
+
+    this.viewport.eventMode = "static";
+    this.viewport.hitArea = this.screen;
+    this.viewport.on("pointerup", this.pointerup, this);
+    this.viewport.on("pointerupoutside", this.pointerup, this);
+    this.viewport.on("pointermove", this.mousemove, this);
     this.view.addEventListener("contextmenu", (e) => e.preventDefault());
+    this.stage.addChild(this.viewport);
   }
 
   public addBlocks(blocks: Block[]) {
@@ -36,7 +45,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
    */
   public addBlock(block: Block) {
     this.blocks.push(block);
-    this.stage.addChild(block);
+    this.viewport.addChild(block);
     const middleOfBlock = new Point(
       block.x - block.width / 2,
       block.y - block.height / 2
@@ -45,7 +54,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.groups.find((g) => {
       if (g.isNearMembers(block)) {
         // Spawned inside a group
-        this.stage.removeChild(block);
+        this.viewport.removeChild(block);
         g.addBlock(block);
         block.addToGroup(g);
         block.parent.toLocal(block.position, undefined, block.position);
@@ -56,16 +65,17 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.looseBlocks.find((lb) => {
       if (lb.isNear(block)) {
         // Spawned near a loose block
-        this.stage.removeChild(lb);
-        this.stage.removeChild(block);
+        this.viewport.removeChild(lb);
+        this.viewport.removeChild(block);
         const newGroup = new Group("random", [lb, block]);
-        this.stage.addChild(newGroup);
+        this.viewport.addChild(newGroup);
         lb.addToGroup(newGroup);
         block.addToGroup(newGroup);
         // Block no longer loose
         this.looseBlocks = this.looseBlocks.filter((b) => b !== lb);
         this.groups.push(newGroup);
         newGroup.updateBoundary(false);
+
         return true;
       }
     });
@@ -80,7 +90,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       const formerGroup = active.getGroup();
       const globalPos = active.parent.toGlobal(active.position);
       formerGroup?.removeBlock(active);
-      this.stage.addChild(active);
+      this.viewport.addChild(active);
 
       active.parent.toLocal(globalPos, undefined, active.position);
       active.removeFromGroup();
@@ -95,7 +105,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         );
 
         formerGroup.destroy();
-        this.stage.addChild(lastMember);
+        this.viewport.addChild(lastMember);
         lastMember.parent.toLocal(
           lastMemberGlobalPos,
           undefined,
@@ -107,22 +117,22 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
     if (active?.hasFusingGroup()) {
       if (active instanceof Block) {
-        this.stage.removeChild(active);
+        this.viewport.removeChild(active);
         active.fuse();
         this.looseBlocks = this.looseBlocks.filter((b) => b !== active);
       }
       if (active instanceof Group) {
         active.fuse();
-        this.stage.removeChild(active);
+        this.viewport.removeChild(active);
         active.destroy();
         this.groups = this.groups.filter((g) => g !== active);
       }
     }
     if (active instanceof Block && active.hasFusingBlock()) {
       const fusingBlock = active.getFusingBlock()!;
-      this.stage.removeChild(active, fusingBlock);
+      this.viewport.removeChild(active, fusingBlock);
       const newGroup = new Group("random", [active, fusingBlock]);
-      this.stage.addChild(newGroup);
+      this.viewport.addChild(newGroup);
       active.unsetFusingBlock();
       active.addToGroup(newGroup);
       fusingBlock.addToGroup(newGroup);
@@ -134,17 +144,22 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.blocks.forEach((b) => {
       b.end();
     });
+    // console.log(this.blocks[2].getBounds(), e.global);
+
     this.looseBlocks.forEach((r) => r.hideBoundary());
     this.groups.forEach((g) => {
       g.hideBoundary();
       g.end();
     });
+    this.resumeViewport();
   }
 
   protected mousemove(e: FederatedPointerEvent): void {
     const active = this.getActive();
     if (active) {
-      active?.move(e);
+      this.pauseViewport();
+
+      active?.move(e.global);
     }
     if (active instanceof Block) {
       [
@@ -200,8 +215,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         }
       }
       if (!active.nearFusing() && !active.nearGroup()) {
-        console.log("has neither");
-
         this.groups.find((g) => {
           // Dragged into a group
           if (g.isNearMembers(active)) {
@@ -240,5 +253,15 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
 
   private getActive(): Block | Group | undefined {
     return [...this.blocks, ...this.groups].find((el) => el.isActive());
+  }
+
+  private pauseViewport(): void {
+    this.viewport.plugins.pause("drag");
+    this.viewport.plugins.pause("wheel");
+  }
+
+  private resumeViewport(): void {
+    this.viewport.plugins.resume("drag");
+    this.viewport.plugins.resume("wheel");
   }
 }

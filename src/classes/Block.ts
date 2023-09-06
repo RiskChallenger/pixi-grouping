@@ -1,4 +1,4 @@
-import { FederatedPointerEvent, Graphics, Point } from "pixi.js";
+import { Graphics, Point } from "pixi.js";
 import { Corners, getCornersFromBounds } from "../helpers";
 import { DragContainer } from "./DragContainer";
 import { Group } from "./Group";
@@ -21,26 +21,26 @@ export class Block extends DragContainer {
     this.updateBoundary(false);
     this.eventMode = "static";
     this.cursor = "pointer";
-    this.on("pointerdown", this.click);
+    this.on("pointerdown", this.click, this);
 
     this.x = x;
     this.y = y;
   }
 
-  public move(e: FederatedPointerEvent) {
+  public move(point: Point) {
     if (this.nearFusingBlock()) {
       this.fusingBlock?.setBoundaryExtension(this.getBounds());
       this.fusingBlock?.updateBoundary();
     }
 
     const pos = new Point(
-      e.global.x - (this.relativeMousePosition?.x ?? 0),
-      e.global.y - (this.relativeMousePosition?.y ?? 0)
+      point.x, // - (this.relativeMousePosition?.x ?? 0),
+      point.y // - (this.relativeMousePosition?.y ?? 0)
     );
 
     if (this.hasGroup()) {
-      this.group?.updateBoundary();
       this.parent.toLocal(pos, this.group!, this.position);
+      this.group?.updateBoundary(false);
     } else {
       this.parent.toLocal(pos, undefined, this.position);
     }

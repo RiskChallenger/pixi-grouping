@@ -10,11 +10,12 @@ const app = new GroupingApplication({
 });
 
 document.body.appendChild(app.view);
-const block1 = new Block(300, 300, 0xff0000); //red
-const block2 = new Block(400, 380, 0x00ff00); //green
+const block1 = new Block(200, 200, 0xff0000); //red
+const block2 = new Block(300, 250, 0x00ff00); //green
 const block3 = new Block(750, 725, 0x0000ff); //blue
 const block4 = new Block(800, 800, 0xffff00); //yellow
-app.addBlocks([block1, block2, block3, block4]);
+const block5 = new Block(800, 300, 0xff00ff); //pink
+app.addBlocks([block1, block2, block3, block4, block5]);
 
 app.stage.on("rightdown", addBlock);
 

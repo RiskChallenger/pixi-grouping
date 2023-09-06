@@ -15,12 +15,33 @@ export class Group extends DragContainer {
     this.blocks = blocks;
     this.addChild(...blocks);
 
+    const bounds = this.getBounds();
     this.nameText = new Text(name, nameStyle);
+    const textPos = new Point(
+      bounds.x + bounds.width / 2 - this.nameText.width / 2,
+      bounds.y - 60
+    );
+    this.nameText.x = textPos.x;
+    this.nameText.y = textPos.y;
     this.addChild(this.nameText);
     this.updateBoundary();
     this.nameText.cursor = "pointer";
     this.nameText.eventMode = "static";
     this.nameText.on("pointerdown", this.click, this);
+  }
+
+  public move(point: Point) {
+    if (this.nearFusingGroup()) {
+      this.fusingGroup?.setBoundaryExtension(this.getBounds());
+      this.fusingGroup?.updateBoundary();
+    }
+
+    const pos = new Point(
+      point.x, // - (this.relativeMousePosition?.x ?? 0),
+      point.y // - (this.relativeMousePosition?.y ?? 0)
+    );
+
+    this.parent.toLocal(pos, undefined, this.position);
   }
 
   public addBlock(block: Block) {
@@ -78,9 +99,11 @@ export class Group extends DragContainer {
     console.log("fuse groups");
 
     this.blocks.forEach((b) => {
+      const oldPos = b.getBounds();
       this.removeBlock(b);
       this.fusingGroup?.addBlock(b);
-      b.toGlobal(this.parent.toLocal(this.position, undefined), b.position);
+
+      b.parent.toLocal(new Point(oldPos.x, oldPos.y), undefined, b.position);
       b.addToGroup(this.fusingGroup!);
     });
 

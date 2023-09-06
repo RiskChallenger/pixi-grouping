@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@riskchallenger/open-components": "^1.6.0",
+    "pixi-viewport": "^5.0.2",
     "pixi.js": "^7.2.4"
   }
 }
