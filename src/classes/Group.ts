@@ -32,16 +32,11 @@ export class Group extends DragContainer {
 
   public move(point: Point) {
     if (this.nearFusingGroup()) {
-      this.fusingGroup?.setBoundaryExtension(this.getBounds());
-      this.fusingGroup?.updateBoundary();
+      this.hideText();
+    } else {
+      this.showText();
     }
-
-    const pos = new Point(
-      point.x - (this.relativeMousePosition?.x ?? 0),
-      point.y - (this.relativeMousePosition?.y ?? 0)
-    );
-
-    this.parent.toLocal(pos, undefined, this.position);
+    super.move(point);
   }
 
   public addBlock(block: Block) {
@@ -108,6 +103,14 @@ export class Group extends DragContainer {
     });
 
     this.unsetFusingGroup();
+  }
+
+  private hideText(): void {
+    this.nameText.visible = false;
+  }
+
+  private showText(): void {
+    this.nameText.visible = true;
   }
 
   public updateBoundary(visible = true): void {

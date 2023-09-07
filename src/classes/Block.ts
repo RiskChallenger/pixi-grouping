@@ -33,16 +33,11 @@ export class Block extends DragContainer {
       this.fusingBlock?.updateBoundary();
     }
 
-    const pos = new Point(
-      point.x - (this.relativeMousePosition?.x ?? 0),
-      point.y - (this.relativeMousePosition?.y ?? 0)
-    );
-
-    this.parent.toLocal(pos, undefined, this.position);
-
     if (this.hasGroup()) {
       this.group?.updateBoundary(false);
     }
+
+    super.move(point);
   }
 
   public getCorners(): Corners {

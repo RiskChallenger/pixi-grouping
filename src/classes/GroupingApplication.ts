@@ -21,6 +21,8 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     super(options);
 
     this.viewport = new Viewport({
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
       events: this.renderer.events,
     });
     this.viewport.drag();
@@ -30,7 +32,10 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.viewport.on("pointerup", this.pointerup, this);
     this.viewport.on("pointerupoutside", this.pointerup, this);
     this.viewport.on("pointermove", this.mousemove, this);
-    this.view.addEventListener("contextmenu", (e) => e.preventDefault());
+    this.view.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+    this.viewport.on("rightdown", this.rightclick, this);
     this.stage.addChild(this.viewport);
   }
 
@@ -167,7 +172,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         ...this.looseBlocks.filter((lb) => !lb.nearFusing()),
       ].forEach((g) => g.showBoundary());
     } else if (active instanceof Group) {
-      this.groups.forEach((g) => g.showBoundary());
+      this.groups
+        .filter((g) => !g.nearFusingGroup())
+        .forEach((g) => g.showBoundary());
     }
 
     if (active instanceof Group) {
@@ -263,5 +270,19 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   private resumeViewport(): void {
     this.viewport.plugins.resume("drag");
     this.viewport.plugins.resume("wheel");
+  }
+
+  private randomBlock(): Block {
+    return new Block(
+      Math.max(100, Math.random() * (this.screen.width - 100)),
+      Math.max(110, Math.random() * (this.screen.height - 50)),
+      Math.random() * 0xffffff
+    );
+  }
+
+  private rightclick(e: FederatedPointerEvent): void {
+    const block = this.randomBlock();
+    block.position = new Point(e.global.x, e.global.y);
+    this.addBlock(block);
   }
 }
