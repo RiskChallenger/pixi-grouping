@@ -10,13 +10,13 @@ import { Group } from "./Group";
 
 export class DragContainer extends Container {
   protected boundaryGraphic = new Graphics();
-  protected relativeMousePosition: Point | undefined;
+  protected relativeMousePosition: Point = new Point();
   // True if the mouse is currently pressed down on this
   protected active = false;
   // Group this will fuse with on mouse up
   protected fusingGroup: Group | null = null;
   // A rectangle that should be included when drawing the boundary
-  private boundaryExtension: Rectangle | null = null;
+  protected boundaryExtension: Rectangle | null = null;
 
   constructor() {
     super();
@@ -25,20 +25,21 @@ export class DragContainer extends Container {
   }
 
   public click(e: FederatedPointerEvent): void {
-    this.setRelativeMousePosition(e.client);
+    this.setRelativeMousePosition(e.global);
     this.active = true;
   }
 
-  public move(e: FederatedPointerEvent) {
+  public move(point: Point) {
     if (this.nearFusingGroup()) {
       this.fusingGroup?.setBoundaryExtension(this.getBounds());
       this.fusingGroup?.updateBoundary();
     }
 
     const pos = new Point(
-      e.global.x - (this.relativeMousePosition?.x ?? 0),
-      e.global.y - (this.relativeMousePosition?.y ?? 0)
+      point.x - (this.relativeMousePosition?.x ?? 0),
+      point.y - (this.relativeMousePosition?.y ?? 0)
     );
+
     this.parent.toLocal(pos, undefined, this.position);
   }
 
@@ -92,7 +93,9 @@ export class DragContainer extends Container {
   }
 
   public setRelativeMousePosition(p: Point) {
-    this.relativeMousePosition = new Point(p.x - this.x, p.y - this.y);
+    this.parent.toLocal(p, undefined, this.relativeMousePosition);
+    this.relativeMousePosition.x -= this.x;
+    this.relativeMousePosition.y -= this.y;
   }
 
   public setBoundaryExtension(area: Rectangle): void {
@@ -155,14 +158,9 @@ export class DragContainer extends Container {
       pos.y - indicatorMargin / 2,
       bounds.width + indicatorMargin,
       bounds.height + indicatorMargin,
-      10000
+      1000000
     );
     this.boundaryGraphic.visible = visible;
     this.boundaryGraphic.endFill();
-  }
-
-  // TODO TEMP
-  public deactivate(): void {
-    this.active = false;
   }
 }

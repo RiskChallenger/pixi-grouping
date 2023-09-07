@@ -3,8 +3,8 @@ import { Corners, getCornersFromBounds } from "../helpers";
 import { Block } from "./Block";
 import { DragContainer } from "./DragContainer";
 export class Group extends DragContainer {
-  private blocks: Block[] = [];
-  private nameText: Text;
+  protected blocks: Block[] = [];
+  protected nameText: Text;
 
   constructor(
     name: string,
@@ -15,12 +15,28 @@ export class Group extends DragContainer {
     this.blocks = blocks;
     this.addChild(...blocks);
 
+    const bounds = this.getBounds();
     this.nameText = new Text(name, nameStyle);
+    const textPos = new Point(
+      bounds.x + bounds.width / 2 - this.nameText.width / 2,
+      bounds.y - 60
+    );
+    this.nameText.x = textPos.x;
+    this.nameText.y = textPos.y;
     this.addChild(this.nameText);
     this.updateBoundary();
     this.nameText.cursor = "pointer";
     this.nameText.eventMode = "static";
     this.nameText.on("pointerdown", this.click, this);
+  }
+
+  public move(point: Point) {
+    if (this.nearFusingGroup()) {
+      this.hideText();
+    } else {
+      this.showText();
+    }
+    super.move(point);
   }
 
   public addBlock(block: Block) {
@@ -75,16 +91,25 @@ export class Group extends DragContainer {
     if (!this.fusingGroup) {
       throw new Error("Cannot fuse without fusing group");
     }
-    console.log("fuse groups");
 
     this.blocks.forEach((b) => {
+      const oldPos = b.getBounds();
       this.removeBlock(b);
       this.fusingGroup?.addBlock(b);
-      b.toGlobal(this.parent.toLocal(this.position, undefined), b.position);
+
+      b.parent.toLocal(new Point(oldPos.x, oldPos.y), undefined, b.position);
       b.addToGroup(this.fusingGroup!);
     });
 
     this.unsetFusingGroup();
+  }
+
+  private hideText(): void {
+    this.nameText.visible = false;
+  }
+
+  private showText(): void {
+    this.nameText.visible = true;
   }
 
   public updateBoundary(visible = true): void {
@@ -99,13 +124,9 @@ export class Group extends DragContainer {
       ),
       undefined
     );
-    // this.nameText = new Text("random", this.nameTextStyle);
     this.nameText.x = pos.x;
     this.nameText.y = pos.y;
     this.nameText.visible = true;
-    // this.nameText.cursor = "pointer";
-    // this.nameText.eventMode = "static";
-    // this.nameText.on("pointerdown", this.click, this);
     this.addChild(this.nameText);
     if (this.blocks.filter((b) => !b.isAwayFromGroup()).length === 1) {
       this.nameText.visible = false;
