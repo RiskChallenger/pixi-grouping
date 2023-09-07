@@ -34,15 +34,14 @@ export class Block extends DragContainer {
     }
 
     const pos = new Point(
-      point.x, // - (this.relativeMousePosition?.x ?? 0),
-      point.y // - (this.relativeMousePosition?.y ?? 0)
+      point.x - (this.relativeMousePosition?.x ?? 0),
+      point.y - (this.relativeMousePosition?.y ?? 0)
     );
 
+    this.parent.toLocal(pos, undefined, this.position);
+
     if (this.hasGroup()) {
-      this.parent.toLocal(pos, this.group!, this.position);
       this.group?.updateBoundary(false);
-    } else {
-      this.parent.toLocal(pos, undefined, this.position);
     }
   }
 
