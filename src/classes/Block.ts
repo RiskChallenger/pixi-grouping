@@ -1,17 +1,17 @@
-import { Graphics, Point } from "pixi.js";
+import { Graphics, Point, Rectangle } from "pixi.js";
 import { Corners, getCornersFromBounds } from "../helpers";
 import { DragContainer } from "./DragContainer";
 import { Group } from "./Group";
 
 export class Block extends DragContainer {
-  private blockGraphic = new Graphics();
-  private fillColor: number | string;
+  protected blockGraphic = new Graphics();
+  protected fillColor: number | string;
   // The group this risk is a member of, if any
-  private group: Group | null = null;
+  protected group: Group | null = null;
   // True when being dragged away from group, disregard in calculating group bounds
-  private awayFromGroup = false;
+  protected awayFromGroup = false;
   // Other loose block this will fuse with on mouse up
-  private fusingBlock: Block | null = null;
+  protected fusingBlock: Block | null = null;
 
   constructor(x = 0, y = 0, fillColor: number | string = "#fff") {
     super();
@@ -84,14 +84,17 @@ export class Block extends DragContainer {
     return this.nearFusingBlock() || this.nearFusingGroup();
   }
 
-  public fuse(): void {
+  public fuse(oldPosition: Rectangle): void {
     if (!this.fusingGroup) {
       throw new Error("Cannot fuse without fusing group");
     }
     this.fusingGroup.addBlock(this);
-    console.log("fuse risk in group");
 
-    this.parent.toLocal(this.position, undefined, this.position);
+    this.parent.toLocal(
+      new Point(oldPosition.x, oldPosition.y),
+      undefined,
+      this.position
+    );
     this.addToGroup(this.fusingGroup);
     this.unsetFusingGroup();
   }
@@ -119,7 +122,7 @@ export class Block extends DragContainer {
     return this.awayFromGroup;
   }
 
-  private createBlockGraphic(): void {
+  protected createBlockGraphic(): void {
     this.blockGraphic.beginFill(this.fillColor);
     this.blockGraphic.drawRoundedRect(0, 0, 200, 100, 5);
     this.blockGraphic.endFill();

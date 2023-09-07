@@ -16,7 +16,7 @@ export class DragContainer extends Container {
   // Group this will fuse with on mouse up
   protected fusingGroup: Group | null = null;
   // A rectangle that should be included when drawing the boundary
-  private boundaryExtension: Rectangle | null = null;
+  protected boundaryExtension: Rectangle | null = null;
 
   constructor() {
     super();
@@ -158,14 +158,9 @@ export class DragContainer extends Container {
       pos.y - indicatorMargin / 2,
       bounds.width + indicatorMargin,
       bounds.height + indicatorMargin,
-      10
+      1000000
     );
     this.boundaryGraphic.visible = visible;
     this.boundaryGraphic.endFill();
-  }
-
-  // TODO TEMP
-  public deactivate(): void {
-    this.active = false;
   }
 }

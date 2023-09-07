@@ -14,6 +14,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   // Blocks that have no group
   private looseBlocks: Block[] = [];
   private groups: Group[] = [];
+  private groupNameCounter = 0;
 
   private viewport: Viewport;
 
@@ -58,11 +59,16 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     block.parent.toLocal(middleOfBlock, undefined, block.position);
     this.groups.find((g) => {
       if (g.isNearMembers(block)) {
+        const oldPos = block.getBounds();
         // Spawned inside a group
         this.viewport.removeChild(block);
         g.addBlock(block);
         block.addToGroup(g);
-        block.parent.toLocal(block.position, undefined, block.position);
+        block.parent.toLocal(
+          new Point(oldPos.x, oldPos.y),
+          undefined,
+          block.position
+        );
         g.updateBoundary(false);
         return true;
       }
@@ -72,7 +78,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         // Spawned near a loose block
         this.viewport.removeChild(lb);
         this.viewport.removeChild(block);
-        const newGroup = new Group("random", [lb, block]);
+        const newGroup = new Group(this.nextGroupName(), [lb, block]);
         this.viewport.addChild(newGroup);
         lb.addToGroup(newGroup);
         block.addToGroup(newGroup);
@@ -122,8 +128,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
     if (active?.hasFusingGroup()) {
       if (active instanceof Block) {
+        const oldPos = active.getBounds();
         this.viewport.removeChild(active);
-        active.fuse();
+        active.fuse(oldPos);
         this.looseBlocks = this.looseBlocks.filter((b) => b !== active);
       }
       if (active instanceof Group) {
@@ -136,7 +143,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     if (active instanceof Block && active.hasFusingBlock()) {
       const fusingBlock = active.getFusingBlock()!;
       this.viewport.removeChild(active, fusingBlock);
-      const newGroup = new Group("random", [active, fusingBlock]);
+      const newGroup = new Group(this.nextGroupName(), [active, fusingBlock]);
       this.viewport.addChild(newGroup);
       active.unsetFusingBlock();
       active.addToGroup(newGroup);
@@ -149,7 +156,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.blocks.forEach((b) => {
       b.end();
     });
-    // console.log(this.blocks[2].getBounds(), e.global);
 
     this.looseBlocks.forEach((r) => r.hideBoundary());
     this.groups.forEach((g) => {
@@ -190,7 +196,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
               g.setBoundaryExtension(active.getBounds());
               active.hideBoundary();
               active.setFusingGroup(g);
-              console.log("colliding groups");
               return true;
             }
           });
@@ -198,25 +203,17 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
     if (active instanceof Block) {
       if (active.hasFusingGroup() && !active.nearFusingGroup()) {
-        console.log("away from fusing group");
         // Away from fusing group
         active.unsetFusingGroup();
       }
       if (active.hasFusingBlock() && !active.nearFusingBlock()) {
-        console.log("away from fusing block");
         active.unsetFusingBlock();
       }
       if (active.hasGroup()) {
-        console.log("has group");
-
         if (!active.nearGroup()) {
-          console.log("away from group");
-
           active.setAwayFromGroup();
           active.showBoundary();
         } else {
-          console.log("close to group");
-
           active.unsetAwayFromGroup();
           active.hideBoundary();
         }
@@ -225,12 +222,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         this.groups.find((g) => {
           // Dragged into a group
           if (g.isNearMembers(active)) {
-            console.log("found new fusing");
-
             g.setBoundaryExtension(active.getBounds());
             active.hideBoundary();
             active.setFusingGroup(g);
-            // active.deactivate();
             return true;
           }
         });
@@ -239,8 +233,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
           .filter((lb) => lb !== active)
           .some((lb) => {
             if (active.isNear(lb)) {
-              console.log("found new buddy");
-
               lb.setBoundaryExtension(active.getBounds());
               active.hideBoundary();
               active.setFusingBlock(lb);
@@ -284,5 +276,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     const block = this.randomBlock();
     block.position = new Point(e.global.x, e.global.y);
     this.addBlock(block);
+  }
+
+  private nextGroupName(): string {
+    return `Group ${++this.groupNameCounter}`;
   }
 }

@@ -3,8 +3,8 @@ import { Corners, getCornersFromBounds } from "../helpers";
 import { Block } from "./Block";
 import { DragContainer } from "./DragContainer";
 export class Group extends DragContainer {
-  private blocks: Block[] = [];
-  private nameText: Text;
+  protected blocks: Block[] = [];
+  protected nameText: Text;
 
   constructor(
     name: string,
@@ -91,7 +91,6 @@ export class Group extends DragContainer {
     if (!this.fusingGroup) {
       throw new Error("Cannot fuse without fusing group");
     }
-    console.log("fuse groups");
 
     this.blocks.forEach((b) => {
       const oldPos = b.getBounds();
@@ -125,13 +124,9 @@ export class Group extends DragContainer {
       ),
       undefined
     );
-    // this.nameText = new Text("random", this.nameTextStyle);
     this.nameText.x = pos.x;
     this.nameText.y = pos.y;
     this.nameText.visible = true;
-    // this.nameText.cursor = "pointer";
-    // this.nameText.eventMode = "static";
-    // this.nameText.on("pointerdown", this.click, this);
     this.addChild(this.nameText);
     if (this.blocks.filter((b) => !b.isAwayFromGroup()).length === 1) {
       this.nameText.visible = false;
