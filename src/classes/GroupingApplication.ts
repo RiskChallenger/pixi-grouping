@@ -95,6 +95,14 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
   }
 
+  public panToHome(): void {
+    this.viewport.moveCorner(0, 0);
+  }
+
+  public getLocations(): Point[] {
+    return this.blocks.map((b) => this.viewport.toWorld(b.getBounds()));
+  }
+
   protected pointerup(): void {
     const active = this.getActive();
     if (active instanceof Block && active.isAwayFromGroup()) {

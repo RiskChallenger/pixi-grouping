@@ -19,5 +19,12 @@ const blocks = [
 app.addBlocks(blocks);
 
 document.querySelector("#button")?.addEventListener("click", () => {
-  console.log(blocks.map((b) => app.stage.toGlobal(b.getBounds())));
+  app.addBlock(new Block(700, 700, 0x00ffff));
+  console.log(app.getLocations());
+});
+
+document.querySelector("#home")?.addEventListener("click", () => {
+  console.log(app.getLocations());
+  app.panToHome();
+  console.log(app.getLocations());
 });

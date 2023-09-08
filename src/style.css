@@ -1,1 +1,7 @@
 @import "@riskchallenger/open-components/main.css";
+
+#home {
+  position: absolute;
+  left: var(--size-5);
+  top: var(--size-5);
+}
