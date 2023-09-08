@@ -1,7 +1,11 @@
 @import "@riskchallenger/open-components/main.css";
 
+.canvas-container {
+  position: relative;
+}
+
 #home {
   position: absolute;
-  left: var(--size-5);
-  top: var(--size-5);
+  left: var(--size-3);
+  top: var(--size-3);
 }

@@ -8,7 +8,7 @@ const app = new GroupingApplication({
   antialias: true,
 });
 
-document.body.appendChild(app.view);
+document.querySelector(".canvas-container")?.appendChild(app.view);
 const blocks = [
   new Block(200, 200, 0xff0000), //red
   new Block(300, 250, 0x00ff00), //green
@@ -19,7 +19,8 @@ const blocks = [
 app.addBlocks(blocks);
 
 document.querySelector("#button")?.addEventListener("click", () => {
-  app.addBlock(new Block(700, 700, 0x00ffff));
+  app.groups[0].updateName("Dit is mijn nieuwe naam en hij is best lang");
+  // app.addBlock(new Block(700, 700, 0x00ffff));
   console.log(app.getLocations());
 });
 

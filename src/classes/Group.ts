@@ -55,6 +55,16 @@ export class Group extends DragContainer {
     return this.blocks.length;
   }
 
+  public updateName(name: string): void {
+    this.nameText.text = name;
+    const bounds = this.getBounds();
+    const textPos = new Point(
+      bounds.x + bounds.width / 2 - this.nameText.width / 2,
+      bounds.y - 60
+    );
+    this.nameText.parent.toLocal(textPos, undefined, this.nameText.position);
+  }
+
   public isNearMembers(other: DragContainer): boolean {
     return this.blocks.filter((r) => r !== other && other.isNear(r)).length > 0;
   }
@@ -113,7 +123,6 @@ export class Group extends DragContainer {
   }
 
   public updateBoundary(visible = true): void {
-    this.removeChild(this.nameText);
     super.updateBoundary(visible);
     const bounds = this.getBounds();
 
@@ -126,8 +135,6 @@ export class Group extends DragContainer {
     );
     this.nameText.x = pos.x;
     this.nameText.y = pos.y;
-    this.nameText.visible = true;
-    this.addChild(this.nameText);
     if (this.blocks.filter((b) => !b.isAwayFromGroup()).length === 1) {
       this.nameText.visible = false;
     }
