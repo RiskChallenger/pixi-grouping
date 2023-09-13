@@ -13,7 +13,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   private blocks: Block[] = [];
   // Blocks that have no group
   private looseBlocks: Block[] = [];
-  private groups: Group[] = [];
+  public groups: Group[] = [];
   private groupNameCounter = 0;
 
   private viewport: Viewport;
@@ -25,8 +25,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       screenWidth: window.innerWidth,
       screenHeight: window.innerHeight,
       events: this.renderer.events,
+      passiveWheel: false,
     });
-    this.viewport.drag();
+    this.viewport.sortableChildren = true;
+    this.viewport.drag({ wheel: false });
+    this.viewport.decelerate();
 
     this.viewport.eventMode = "static";
     this.viewport.hitArea = this.screen;
@@ -37,6 +40,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       e.preventDefault();
     });
     this.viewport.on("rightdown", this.rightclick, this);
+
     this.stage.addChild(this.viewport);
   }
 
@@ -96,7 +100,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   }
 
   public panToHome(): void {
-    this.viewport.moveCorner(0, 0);
+    this.viewport.moveCenter(0, 0);
   }
 
   public getLocations(): Point[] {
@@ -105,6 +109,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
 
   protected pointerup(): void {
     const active = this.getActive();
+    active?.pointerup();
     if (active instanceof Block && active.isAwayFromGroup()) {
       const formerGroup = active.getGroup();
       const globalPos = active.parent.toGlobal(active.position);
@@ -144,7 +149,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       if (active instanceof Group) {
         active.fuse();
         this.viewport.removeChild(active);
-        active.destroy();
         this.groups = this.groups.filter((g) => g !== active);
       }
     }
@@ -160,6 +164,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         (b) => b !== active && b !== fusingBlock
       );
       this.groups.push(newGroup);
+      this.stage.emit("new-group", newGroup);
     }
     this.blocks.forEach((b) => {
       b.end();
@@ -251,6 +256,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         if (!isFusing) {
           active.unsetFusingBlock();
         }
+      }
+      if (active.isOverlayingFusingBlock()) {
+        active.setMergingBlock();
+      } else {
+        active.unsetMergingBlock();
       }
       if (active.nearFusing()) {
         active.hideBoundary();

@@ -1,17 +1,5 @@
-import { Rectangle } from "pixi.js";
+import { Point } from "pixi.js";
 
-export type Corners = {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-};
-
-export function getCornersFromBounds(bounds: Rectangle): Corners {
-  return {
-    left: bounds.x,
-    top: bounds.y,
-    right: bounds.x + bounds.width,
-    bottom: bounds.y + bounds.height,
-  };
+export function distanceBetweenPoints(p1: Point, p2: Point): number {
+  return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
 }

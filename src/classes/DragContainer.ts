@@ -5,16 +5,19 @@ import {
   Point,
   Rectangle,
 } from "pixi.js";
-import { Corners, getCornersFromBounds } from "../helpers";
 import { Group } from "./Group";
 
 export class DragContainer extends Container {
   protected boundaryGraphic = new Graphics();
   protected relativeMousePosition: Point = new Point();
+  protected dragged = false;
+
   // True if the mouse is currently pressed down on this
   protected active = false;
+
   // Group this will fuse with on mouse up
   protected fusingGroup: Group | null = null;
+
   // A rectangle that should be included when drawing the boundary
   protected boundaryExtension: Rectangle | null = null;
 
@@ -24,12 +27,22 @@ export class DragContainer extends Container {
     this.addChild(this.boundaryGraphic);
   }
 
-  public click(e: FederatedPointerEvent): void {
+  public pointerup(): void {
+    if (!this.dragged) {
+      this.emit("no-drag-click");
+    }
+    this.dragged = false;
+    this.zIndex = 0;
+  }
+
+  public pointerdown(e: FederatedPointerEvent): void {
     this.setRelativeMousePosition(e.global);
     this.active = true;
+    this.zIndex = 1;
   }
 
   public move(point: Point) {
+    this.dragged = true;
     if (this.nearFusingGroup()) {
       this.fusingGroup?.setBoundaryExtension(this.getBounds());
       this.fusingGroup?.updateBoundary();
@@ -52,14 +65,16 @@ export class DragContainer extends Container {
   }
 
   public isNear(other: DragContainer): boolean {
-    const myCorners = this.getCorners();
-    const otherCorners = other.getCorners();
-    const margin = 50;
+    // Use custom bounds to ignore boundary extensions
+    const myBounds = this.getCustomBounds();
+    const otherBounds = other.getCustomBounds();
+
+    const margin = 30;
     return (
-      myCorners.left < otherCorners.right + margin &&
-      myCorners.right + margin > otherCorners.left &&
-      myCorners.top < otherCorners.bottom + margin &&
-      myCorners.bottom + margin > otherCorners.top
+      myBounds.left < otherBounds.right + margin &&
+      myBounds.right + margin > otherBounds.left &&
+      myBounds.top < otherBounds.bottom + margin &&
+      myBounds.bottom + margin > otherBounds.top
     );
   }
 
@@ -109,41 +124,21 @@ export class DragContainer extends Container {
   }
 
   public getBounds(): Rectangle {
-    const corners = this.getCorners();
-    const extendedCorners = this.getExtendedCorners(corners);
-    return new Rectangle(
-      extendedCorners.left,
-      extendedCorners.top,
-      extendedCorners.right - extendedCorners.left,
-      extendedCorners.bottom - extendedCorners.top
-    );
-  }
-
-  protected getCorners(): Corners {
-    const bounds = super.getBounds();
-    return getCornersFromBounds(bounds);
-  }
-
-  protected getExtendedCorners(corners: Corners): Corners {
+    const bounds = this.getCustomBounds();
     if (this.boundaryExtension) {
-      const combinedCorners = [
-        corners,
-        {
-          left: this.boundaryExtension.x,
-          top: this.boundaryExtension.y,
-          right: this.boundaryExtension.x + this.boundaryExtension.width,
-          bottom: this.boundaryExtension.y + this.boundaryExtension.height,
-        },
-      ];
-      return {
-        left: Math.min(...combinedCorners.map((c) => c.left)),
-        top: Math.min(...combinedCorners.map((c) => c.top)),
-        right: Math.max(...combinedCorners.map((c) => c.right)),
-        bottom: Math.max(...combinedCorners.map((c) => c.bottom)),
-      };
+      const combinedBounds = [bounds, this.boundaryExtension];
+      const x = Math.min(...combinedBounds.map((b) => b.x));
+      const y = Math.min(...combinedBounds.map((b) => b.y));
+      const width = Math.max(...combinedBounds.map((b) => b.right - x));
+      const height = Math.max(...combinedBounds.map((b) => b.bottom - y));
+      return new Rectangle(x, y, width, height);
     } else {
-      return corners;
+      return bounds;
     }
+  }
+
+  protected getCustomBounds(): Rectangle {
+    return super.getBounds();
   }
 
   private createBoundaryGraphic(visible = false): void {

@@ -1,5 +1,4 @@
-import { ITextStyle, Point, Text } from "pixi.js";
-import { Corners, getCornersFromBounds } from "../helpers";
+import { ITextStyle, Point, Rectangle, Text } from "pixi.js";
 import { Block } from "./Block";
 import { DragContainer } from "./DragContainer";
 export class Group extends DragContainer {
@@ -12,6 +11,7 @@ export class Group extends DragContainer {
     nameStyle: Partial<ITextStyle> = { fill: "#fff" }
   ) {
     super();
+    this.sortableChildren = true;
     this.blocks = blocks;
     this.addChild(...blocks);
 
@@ -27,7 +27,7 @@ export class Group extends DragContainer {
     this.updateBoundary();
     this.nameText.cursor = "pointer";
     this.nameText.eventMode = "static";
-    this.nameText.on("pointerdown", this.click, this);
+    this.nameText.on("pointerdown", this.pointerdown, this);
   }
 
   public move(point: Point) {
@@ -43,16 +43,22 @@ export class Group extends DragContainer {
     this.blocks.push(block);
     this.addChild(block);
     this.updateBoundary();
+    this.emit("block-added", block);
   }
 
   public removeBlock(block: Block) {
     this.blocks = this.blocks.filter((b) => b !== block);
     this.removeChild(block);
     this.updateBoundary();
+    this.emit("block-removed", block);
   }
 
   public getLength(): number {
     return this.blocks.length;
+  }
+
+  public getName(): string {
+    return this.nameText.text;
   }
 
   public updateName(name: string): void {
@@ -63,6 +69,7 @@ export class Group extends DragContainer {
       bounds.y - 60
     );
     this.nameText.parent.toLocal(textPos, undefined, this.nameText.position);
+    this.emit("name-changed", name);
   }
 
   public isNearMembers(other: DragContainer): boolean {
@@ -80,21 +87,21 @@ export class Group extends DragContainer {
     return this.blocks[0];
   }
 
-  public getCorners(): Corners {
+  protected getCustomBounds(): Rectangle {
     if (!this.blocks) {
-      return super.getCorners();
+      return super.getCustomBounds();
     }
 
-    const allBlockCorners = this.blocks
+    const allBlockBounds = this.blocks
       .filter((b) => !b.isAwayFromGroup())
-      .map((b) => getCornersFromBounds(b.getBounds()));
+      .map((b) => b.getBounds());
 
-    return {
-      left: Math.min(...allBlockCorners.map((c) => c.left)),
-      top: Math.min(...allBlockCorners.map((c) => c.top)),
-      right: Math.max(...allBlockCorners.map((c) => c.right)),
-      bottom: Math.max(...allBlockCorners.map((c) => c.bottom)),
-    };
+    const x = Math.min(...allBlockBounds.map((b) => b.x));
+    const y = Math.min(...allBlockBounds.map((b) => b.y));
+    const width = Math.max(...allBlockBounds.map((b) => b.right - x));
+    const height = Math.max(...allBlockBounds.map((b) => b.bottom - y));
+
+    return new Rectangle(x, y, width, height);
   }
 
   public fuse(): void {
@@ -112,6 +119,12 @@ export class Group extends DragContainer {
     });
 
     this.unsetFusingGroup();
+    this.destroy();
+  }
+
+  public destroy(): void {
+    this.emit("disbandoned");
+    super.destroy();
   }
 
   private hideText(): void {
