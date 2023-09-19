@@ -1,6 +1,6 @@
 {
   "name": "pixi-grouping",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "An extension of Pixi implementing dragging and grouping of blocks",
   "repository": {
     "type": "git",
