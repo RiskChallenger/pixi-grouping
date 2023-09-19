@@ -1,7 +1,16 @@
 @import "@riskchallenger/open-components/main.css";
 
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
 .canvas-container {
   position: relative;
+  flex: 1;
+  width: 100%;
 }
 
 #home {

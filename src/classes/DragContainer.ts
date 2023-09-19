@@ -44,8 +44,8 @@ export class DragContainer extends Container {
     this.zIndex = 100;
   }
 
-  public move(point: Point, easeTime = 0) {
-    this.dragged = true;
+  public drag(point: Point, easeTime = 0) {
+    this.dragged = this.active;
     if (this.nearFusingGroup()) {
       this.fusingGroup?.setBoundaryExtension(this.getBounds());
       this.fusingGroup?.updateBoundary();
@@ -57,14 +57,18 @@ export class DragContainer extends Container {
     );
 
     const newPosition = this.parent.toLocal(pos, undefined);
+    this.move(newPosition, easeTime);
+  }
+
+  public move(point: Point, easeTime = 0) {
     if (easeTime > 0) {
       ease.add(
         this,
-        { position: newPosition },
+        { position: point },
         { duration: easeTime, wait: 0, ease: "linear" }
       );
     } else {
-      this.position = newPosition;
+      this.position = point;
     }
   }
 

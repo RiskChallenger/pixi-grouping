@@ -59,7 +59,7 @@ export class Block extends DragContainer {
     super.pointerup();
   }
 
-  public move(point: Point, easeTime = 0) {
+  public drag(point: Point, easeTime = 0) {
     if (this.nearFusingBlock()) {
       this.fusingBlock?.setBoundaryExtension(this.getBounds());
       this.fusingBlock?.updateBoundary();
@@ -69,7 +69,7 @@ export class Block extends DragContainer {
       this.group?.updateBoundary(false);
     }
 
-    super.move(point, easeTime);
+    super.drag(point, easeTime);
   }
 
   protected getCustomBounds(): Rectangle {

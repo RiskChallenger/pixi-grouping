@@ -5,9 +5,17 @@ import "./style.css";
 
 const app = new GroupingApplication({
   background: "#333",
-  resizeTo: window,
   antialias: true,
+  view: document.querySelector("canvas")!,
 });
+
+const resizeObserver = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    app.resizeCanvas(entry.contentRect.width, entry.contentRect.height);
+  }
+});
+
+resizeObserver.observe(document.querySelector(".canvas-container")!);
 
 document.querySelector(".canvas-container")?.appendChild(app.view);
 const blocks = [

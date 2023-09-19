@@ -33,6 +33,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
 
     this.viewport.eventMode = "static";
     this.viewport.hitArea = this.screen;
+    this.viewport.moveCenter(0, 0);
     this.viewport.on("pointerup", this.pointerup, this);
     this.viewport.on("pointerupoutside", this.pointerup, this);
     this.viewport.on("pointermove", this.mousemove, this);
@@ -186,7 +187,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     if (active) {
       this.pauseViewport();
 
-      active?.move(e.global);
+      active?.drag(e.global);
     }
     if (active instanceof Block) {
       [
@@ -280,14 +281,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     return [...this.blocks, ...this.groups].find((el) => el.isActive());
   }
 
-  private pauseViewport(): void {
-    this.viewport.plugins.pause("drag");
-    this.viewport.plugins.pause("wheel");
-  }
-
-  private resumeViewport(): void {
-    this.viewport.plugins.resume("drag");
-    this.viewport.plugins.resume("wheel");
+  public resizeCanvas(width: number, height: number): void {
+    this.renderer.resize(width, height);
+    this.viewport.resize(width, height);
   }
 
   public randomBlock(): Block {
@@ -296,6 +292,16 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       Math.max(110, Math.random() * (this.screen.height - 50)),
       Math.random() * 0xffffff
     );
+  }
+
+  private pauseViewport(): void {
+    this.viewport.plugins.pause("drag");
+    this.viewport.plugins.pause("wheel");
+  }
+
+  private resumeViewport(): void {
+    this.viewport.plugins.resume("drag");
+    this.viewport.plugins.resume("wheel");
   }
 
   private rightclick(e: FederatedPointerEvent): void {

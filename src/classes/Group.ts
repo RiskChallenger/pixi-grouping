@@ -33,13 +33,13 @@ export class Group extends DragContainer {
     this.zIndex = this.DEFAULT_ZINDEX;
   }
 
-  public move(point: Point, easeTime = 0) {
+  public drag(point: Point, easeTime = 0) {
     if (this.nearFusingGroup()) {
       this.hideText();
     } else {
       this.showText();
     }
-    super.move(point, easeTime);
+    super.drag(point, easeTime);
   }
 
   public addBlock(block: Block) {
