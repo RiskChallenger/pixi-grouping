@@ -1,29 +1,9 @@
 {
-  "name": "pixi-grouping",
+  "name": "@riskchallenger/pixi-grouping",
   "version": "1.0.0",
+  "private": false,
   "description": "An extension of Pixi implementing dragging and grouping of blocks",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/RiskChallenger/pixi-grouping.git"
-  },
-  "bugs": {
-    "url": "https://github.com/RiskChallenger/pixi-grouping/issues"
-  },
-  "homepage": "https://github.com/RiskChallenger/pixi-grouping#readme",
-  "main": "./dist/pixi_grouping.umd.cjs",
-  "module": "./dist/pixi_grouping.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/pixi_grouping.js",
-      "require": "./dist/pixi_grouping.umd.cjs"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "type": "module",
-  "license": "ISC",
+  "author": "RiskChallenger <info@riskchallenger.nl> (https://riskchallenger.nl)",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -45,5 +25,27 @@
     "pixi-filters": "^5.2.1",
     "pixi-viewport": "^5.0.2",
     "pixi.js": "^7.3.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RiskChallenger/pixi-grouping.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RiskChallenger/pixi-grouping/issues"
+  },
+  "homepage": "https://github.com/RiskChallenger/pixi-grouping#readme",
+  "main": "./dist/pixi_grouping.umd.cjs",
+  "module": "./dist/pixi_grouping.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/pixi_grouping.js",
+      "require": "./dist/pixi_grouping.umd.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "license": "ISC"
 }
