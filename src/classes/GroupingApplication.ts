@@ -3,6 +3,7 @@ import {
   Application,
   FederatedPointerEvent,
   IApplicationOptions,
+  ITextStyle,
   Point,
 } from "pixi.js";
 import { Block } from "./Block";
@@ -13,13 +14,22 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   private blocks: Block[] = [];
   // Blocks that have no group
   private looseBlocks: Block[] = [];
-  public groups: Group[] = [];
+  private groups: Group[] = [];
   private groupNameCounter = 0;
 
+  private groupNameStyle?: Partial<ITextStyle>;
   private viewport: Viewport;
 
-  constructor(options: Partial<IApplicationOptions> | undefined) {
+  constructor(
+    options:
+      | (Partial<IApplicationOptions> & {
+          groupNameStyle?: Partial<ITextStyle>;
+        })
+      | undefined
+  ) {
     super(options);
+
+    this.groupNameStyle = options?.groupNameStyle;
 
     this.viewport = new Viewport({
       screenWidth: window.innerWidth,
@@ -83,7 +93,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         // Spawned near a loose block
         this.viewport.removeChild(lb);
         this.viewport.removeChild(block);
-        const newGroup = new Group(this.nextGroupName(), [lb, block]);
+        const newGroup = new Group(
+          this.nextGroupName(),
+          [lb, block],
+          this.groupNameStyle
+        );
         this.viewport.addChild(newGroup);
         lb.addToGroup(newGroup);
         block.addToGroup(newGroup);

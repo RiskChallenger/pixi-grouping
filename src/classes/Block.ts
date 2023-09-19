@@ -121,13 +121,19 @@ export class Block extends DragContainer {
       throw new Error("Cannot fuse without fusing group");
     }
     this.fusingGroup.addBlock(this);
-
-    this.parent.toLocal(
-      new Point(oldPosition.x, oldPosition.y),
-      undefined,
-      this.position
-    );
     this.addToGroup(this.fusingGroup);
+
+    // TODO position broken if group was moved.
+    // Try something with kidnapChild from helpers function
+
+    this.position = oldPosition;
+    // this.group?.parent.toLocal(
+    //   this.position,
+    //   // new Point(oldPosition.x, oldPosition.y),
+    //   this.group!,
+    //   this.position
+    // );
+
     this.unsetFusingGroup();
   }
 
