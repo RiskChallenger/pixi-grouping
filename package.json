@@ -1,23 +1,49 @@
 {
-  "name": "pixijs-grouping",
-  "private": true,
-  "version": "0.0.0",
+  "name": "pixi-grouping",
+  "version": "0.0.0-development",
+  "description": "An extension of Pixi implementing dragging and grouping of blocks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RiskChallenger/pixi-grouping.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RiskChallenger/pixi-grouping/issues"
+  },
+  "homepage": "https://github.com/RiskChallenger/pixi-grouping#readme",
+  "main": "./dist/pixi_grouping.umd.cjs",
+  "module": "./dist/pixi_grouping.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/pixi_grouping.js",
+      "require": "./dist/pixi_grouping.umd.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
+  "license": "ISC",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
+    "@riskchallenger/open-components": "^1.6.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "semantic-release": "^22.0.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-dts": "^3.5.3"
   },
   "dependencies": {
-    "@riskchallenger/open-components": "^1.6.0",
     "eventemitter3": "^5.0.1",
+    "pixi-ease": "^3.0.6",
     "pixi-filters": "^5.2.1",
     "pixi-viewport": "^5.0.2",
-    "pixi.js": "^7.3.0",
-    "pixi-ease": "^3.0.6"
+    "pixi.js": "^7.3.0"
   }
 }

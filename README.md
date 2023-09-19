@@ -44,8 +44,8 @@ This events can be accessed through `application.stage.on('<event>')`.
 ## Development
 
 ```
-git clone git@github.com:RiskChallenger/pixijs-grouping.git &&
-cd pixijs-grouping &&
+git clone git@github.com:RiskChallenger/pixi-grouping.git &&
+cd pixi-grouping &&
 npm install &&
 npm run dev
 ```
