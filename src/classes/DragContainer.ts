@@ -1,3 +1,4 @@
+import { ease } from "pixi-ease";
 import {
   Container,
   FederatedPointerEvent,
@@ -11,6 +12,7 @@ export class DragContainer extends Container {
   protected boundaryGraphic = new Graphics();
   protected relativeMousePosition: Point = new Point();
   protected dragged = false;
+  protected DEFAULT_ZINDEX = 0;
 
   // True if the mouse is currently pressed down on this
   protected active = false;
@@ -25,6 +27,7 @@ export class DragContainer extends Container {
     super();
     this.createBoundaryGraphic();
     this.addChild(this.boundaryGraphic);
+    this.zIndex = this.DEFAULT_ZINDEX;
   }
 
   public pointerup(): void {
@@ -32,16 +35,16 @@ export class DragContainer extends Container {
       this.emit("no-drag-click");
     }
     this.dragged = false;
-    this.zIndex = 0;
+    this.resetZIndex();
   }
 
   public pointerdown(e: FederatedPointerEvent): void {
     this.setRelativeMousePosition(e.global);
     this.active = true;
-    this.zIndex = 1;
+    this.zIndex = 100;
   }
 
-  public move(point: Point) {
+  public move(point: Point, easeTime = 0) {
     this.dragged = true;
     if (this.nearFusingGroup()) {
       this.fusingGroup?.setBoundaryExtension(this.getBounds());
@@ -53,7 +56,16 @@ export class DragContainer extends Container {
       point.y - (this.relativeMousePosition?.y ?? 0)
     );
 
-    this.parent.toLocal(pos, undefined, this.position);
+    const newPosition = this.parent.toLocal(pos, undefined);
+    if (easeTime > 0) {
+      ease.add(
+        this,
+        { position: newPosition },
+        { duration: easeTime, wait: 0, ease: "linear" }
+      );
+    } else {
+      this.position = newPosition;
+    }
   }
 
   public end() {
@@ -135,6 +147,10 @@ export class DragContainer extends Container {
     } else {
       return bounds;
     }
+  }
+
+  public resetZIndex(): void {
+    this.zIndex = this.DEFAULT_ZINDEX;
   }
 
   protected getCustomBounds(): Rectangle {

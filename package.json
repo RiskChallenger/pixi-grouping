@@ -17,6 +17,7 @@
     "eventemitter3": "^5.0.1",
     "pixi-filters": "^5.2.1",
     "pixi-viewport": "^5.0.2",
-    "pixi.js": ">=7.3.0-rc.2"
+    "pixi.js": "^7.3.0",
+    "pixi-ease": "^3.0.6"
   }
 }

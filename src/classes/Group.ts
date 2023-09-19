@@ -4,6 +4,7 @@ import { DragContainer } from "./DragContainer";
 export class Group extends DragContainer {
   protected blocks: Block[] = [];
   protected nameText: Text;
+  protected DEFAULT_ZINDEX = 1;
 
   constructor(
     name: string,
@@ -28,15 +29,17 @@ export class Group extends DragContainer {
     this.nameText.cursor = "pointer";
     this.nameText.eventMode = "static";
     this.nameText.on("pointerdown", this.pointerdown, this);
+
+    this.zIndex = this.DEFAULT_ZINDEX;
   }
 
-  public move(point: Point) {
+  public move(point: Point, easeTime = 0) {
     if (this.nearFusingGroup()) {
       this.hideText();
     } else {
       this.showText();
     }
-    super.move(point);
+    super.move(point, easeTime);
   }
 
   public addBlock(block: Block) {

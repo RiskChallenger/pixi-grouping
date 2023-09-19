@@ -1,18 +1,24 @@
 import { DropShadowFilter } from "pixi-filters";
-import { Graphics, Point, Rectangle } from "pixi.js";
+import {
+  FederatedPointerEvent,
+  Filter,
+  Graphics,
+  Point,
+  Rectangle,
+} from "pixi.js";
 import { distanceBetweenPoints } from "../helpers";
 import { DragContainer } from "./DragContainer";
 import { Group } from "./Group";
 
 export class Block extends DragContainer {
   protected blockGraphic = new Graphics();
-  protected mergeFilter = new DropShadowFilter({
+  protected overlayFilter = new DropShadowFilter({
     color: 0xffffff,
-    blur: 4,
-    quality: 5,
-    resolution: 5,
+    blur: 5,
+    quality: 10,
+    resolution: 10,
     alpha: 0.8,
-    // offset: { x: 0, y: 0 },
+    offset: { x: 0, y: 0 },
   });
   protected fillColor: number | string;
   // The group this risk is a member of, if any
@@ -21,7 +27,7 @@ export class Block extends DragContainer {
   protected awayFromGroup = false;
   // Other loose block this will form a group with on mouse up
   protected fusingBlock: Block | null = null;
-  protected mergingBlock: Block | null = null;
+  protected overlayBlock: Block | null = null;
 
   constructor(x = 0, y = 0, fillColor: number | string = "#fff") {
     super();
@@ -33,11 +39,27 @@ export class Block extends DragContainer {
     this.cursor = "pointer";
     this.on("pointerdown", this.pointerdown, this);
 
+    this.overlayFilter.padding = 30;
+
     this.x = x;
     this.y = y;
   }
 
-  public move(point: Point) {
+  public pointerdown(e: FederatedPointerEvent): void {
+    if (this.group) {
+      this.group.zIndex = 100;
+    }
+    super.pointerdown(e);
+  }
+
+  public pointerup(): void {
+    if (this.group) {
+      this.group.resetZIndex();
+    }
+    super.pointerup();
+  }
+
+  public move(point: Point, easeTime = 0) {
     if (this.nearFusingBlock()) {
       this.fusingBlock?.setBoundaryExtension(this.getBounds());
       this.fusingBlock?.updateBoundary();
@@ -47,7 +69,7 @@ export class Block extends DragContainer {
       this.group?.updateBoundary(false);
     }
 
-    super.move(point);
+    super.move(point, easeTime);
   }
 
   protected getCustomBounds(): Rectangle {
@@ -127,27 +149,40 @@ export class Block extends DragContainer {
     return distance <= threshold;
   }
 
-  public isOverlayingFusingBlock(): boolean {
-    return this.fusingBlock?.isOverlaying(this) ?? false;
+  public setOverlayBlock(block: Block): void {
+    this.overlayBlock = block;
+    this.showHighlight();
+    this.overlayBlock?.showHighlight();
   }
 
-  // TODO rename, merge -> overlay. What you do with the fact they are overlaying is up to the dev/user of this library
-  public setMergingBlock(): void {
-    this.mergingBlock = this.fusingBlock;
-    this.filters = [this.mergeFilter];
+  public getOverlayBlock(): Block | null {
+    return this.overlayBlock;
   }
 
-  public getMergingBlock(): Block | null {
-    return this.mergingBlock;
+  public unsetOverlayBlock(): void {
+    this.hideHighlight();
+    this.overlayBlock?.hideHighlight();
+    this.overlayBlock = null;
   }
 
-  public unsetMergingBlock(): void {
-    this.mergingBlock = null;
-    this.filters = [];
+  public hasOverlayBlock(): boolean {
+    return this.overlayBlock !== null;
   }
 
-  public hasMergingBlock(): boolean {
-    return this.mergingBlock !== null;
+  /**
+   * If two blocks are overlaying when the mouse is released, this function is called.
+   * It can very well be extended when implementing this library to add more functionality
+   */
+  public overlay(): void {
+    this.emit("overlay", this.overlayBlock);
+  }
+
+  public showHighlight(): void {
+    this.filters = [this.overlayFilter as unknown as Filter];
+  }
+
+  public hideHighlight(): void {
+    this.filters?.pop();
   }
 
   public addToGroup(group: Group): void {

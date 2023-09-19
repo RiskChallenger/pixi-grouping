@@ -1,3 +1,4 @@
+import { Point } from "pixi.js";
 import { Block } from "./classes/Block";
 import { GroupingApplication } from "./classes/GroupingApplication";
 import "./style.css";
@@ -19,9 +20,11 @@ const blocks = [
 app.addBlocks(blocks);
 
 document.querySelector("#button")?.addEventListener("click", () => {
-  app.groups[0].updateName("Dit is mijn nieuwe naam en hij is best lang");
+  // app.groups[0].updateName("Dit is mijn nieuwe naam en hij is best lang");
   // app.addBlock(new Block(700, 700, 0x00ffff));
   console.log(app.getLocations());
+
+  blocks[4].move(new Point(app.screen.width / 2, app.screen.height / 2), 1000);
 });
 
 document.querySelector("#home")?.addEventListener("click", () => {

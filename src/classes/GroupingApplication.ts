@@ -166,6 +166,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       this.groups.push(newGroup);
       this.stage.emit("new-group", newGroup);
     }
+    if (active instanceof Block && active.hasOverlayBlock()) {
+      active.overlay();
+    }
     this.blocks.forEach((b) => {
       b.end();
     });
@@ -241,7 +244,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
             return true;
           }
         });
-
         const isFusing = this.looseBlocks
           .filter((lb) => lb !== active)
           .some((lb) => {
@@ -257,10 +259,16 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
           active.unsetFusingBlock();
         }
       }
-      if (active.isOverlayingFusingBlock()) {
-        active.setMergingBlock();
-      } else {
-        active.unsetMergingBlock();
+      const isOverlaying = this.blocks
+        .filter((b) => b !== active)
+        .some((b) => {
+          if (active.isOverlaying(b)) {
+            active.setOverlayBlock(b);
+            return true;
+          }
+        });
+      if (!isOverlaying) {
+        active.unsetOverlayBlock();
       }
       if (active.nearFusing()) {
         active.hideBoundary();
@@ -282,7 +290,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.viewport.plugins.resume("wheel");
   }
 
-  private randomBlock(): Block {
+  public randomBlock(): Block {
     return new Block(
       Math.max(100, Math.random() * (this.screen.width - 100)),
       Math.max(110, Math.random() * (this.screen.height - 50)),
