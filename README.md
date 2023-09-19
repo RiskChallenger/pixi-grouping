@@ -9,6 +9,7 @@ This library provides an extended implementation of the Pixi Application and Con
 - Drag groups by their name
 - Drag groups together to merge
 - Separate blocks from groups
+- Overlay blocks, to combine/fuse for example
 - Events
 
 ## Customization
@@ -32,6 +33,7 @@ This events can be accessed through `application.stage.on('<event>')`.
 - `joined-group`
 - `left-group`
 - `no-drag-click` - when clicking on a block and not dragging it
+- `overlay` - when overlaying another block, contains the other block in the event
 
 ### Group events
 
