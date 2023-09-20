@@ -1,6 +1,6 @@
 {
   "name": "@riskchallenger/pixi-grouping",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "An extension of Pixi implementing dragging and grouping of blocks",
   "author": "RiskChallenger <info@riskchallenger.nl> (https://riskchallenger.nl)",
