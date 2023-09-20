@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.0.1...v1.0.2) (2023-09-20)
+
+
+### Bug Fixes
+
+* make public on npm ([2100e4b](https://github.com/RiskChallenger/pixi-grouping/commit/2100e4ba190229b27476c61248eeffad930426f9))
+
 ## [1.0.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.0.0...v1.0.1) (2023-09-20)
 
 
