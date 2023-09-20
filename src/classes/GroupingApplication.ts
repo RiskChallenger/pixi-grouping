@@ -3,8 +3,10 @@ import {
   Application,
   FederatedPointerEvent,
   IApplicationOptions,
+  ITextStyle,
   Point,
 } from "pixi.js";
+import { moveToNewParent } from "../helpers";
 import { Block } from "./Block";
 import { Group } from "./Group";
 
@@ -13,13 +15,22 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   private blocks: Block[] = [];
   // Blocks that have no group
   private looseBlocks: Block[] = [];
-  public groups: Group[] = [];
+  private groups: Group[] = [];
   private groupNameCounter = 0;
 
+  private groupNameStyle?: Partial<ITextStyle>;
   private viewport: Viewport;
 
-  constructor(options: Partial<IApplicationOptions> | undefined) {
+  constructor(
+    options:
+      | (Partial<IApplicationOptions> & {
+          groupNameStyle?: Partial<ITextStyle>;
+        })
+      | undefined
+  ) {
     super(options);
+
+    this.groupNameStyle = options?.groupNameStyle;
 
     this.viewport = new Viewport({
       screenWidth: window.innerWidth,
@@ -64,16 +75,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     block.parent.toLocal(middleOfBlock, undefined, block.position);
     this.groups.find((g) => {
       if (g.isNearMembers(block)) {
-        const oldPos = block.getBounds();
-        // Spawned inside a group
-        this.viewport.removeChild(block);
+        moveToNewParent(block, g);
         g.addBlock(block);
         block.addToGroup(g);
-        block.parent.toLocal(
-          new Point(oldPos.x, oldPos.y),
-          undefined,
-          block.position
-        );
         g.updateBoundary(false);
         return true;
       }
@@ -83,7 +87,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         // Spawned near a loose block
         this.viewport.removeChild(lb);
         this.viewport.removeChild(block);
-        const newGroup = new Group(this.nextGroupName(), [lb, block]);
+        const newGroup = new Group(
+          this.nextGroupName(),
+          [lb, block],
+          this.groupNameStyle
+        );
         this.viewport.addChild(newGroup);
         lb.addToGroup(newGroup);
         block.addToGroup(newGroup);
@@ -142,9 +150,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
     if (active?.hasFusingGroup()) {
       if (active instanceof Block) {
-        const oldPos = active.getBounds();
-        this.viewport.removeChild(active);
-        active.fuse(oldPos);
+        active.fuse();
         this.looseBlocks = this.looseBlocks.filter((b) => b !== active);
       }
       if (active instanceof Group) {

@@ -6,7 +6,7 @@ import {
   Point,
   Rectangle,
 } from "pixi.js";
-import { distanceBetweenPoints } from "../helpers";
+import { distanceBetweenPoints, moveToNewParent } from "../helpers";
 import { DragContainer } from "./DragContainer";
 import { Group } from "./Group";
 
@@ -116,18 +116,15 @@ export class Block extends DragContainer {
     return this.nearFusingBlock() || this.nearFusingGroup();
   }
 
-  public fuse(oldPosition: Rectangle): void {
+  public fuse(): void {
     if (!this.fusingGroup) {
       throw new Error("Cannot fuse without fusing group");
     }
-    this.fusingGroup.addBlock(this);
 
-    this.parent.toLocal(
-      new Point(oldPosition.x, oldPosition.y),
-      undefined,
-      this.position
-    );
+    moveToNewParent(this, this.fusingGroup);
+    this.fusingGroup.addBlock(this);
     this.addToGroup(this.fusingGroup);
+
     this.unsetFusingGroup();
   }
 

@@ -1,4 +1,5 @@
 import { ITextStyle, Point, Rectangle, Text } from "pixi.js";
+import { moveToNewParent } from "../helpers";
 import { Block } from "./Block";
 import { DragContainer } from "./DragContainer";
 export class Group extends DragContainer {
@@ -113,11 +114,8 @@ export class Group extends DragContainer {
     }
 
     this.blocks.forEach((b) => {
-      const oldPos = b.getBounds();
-      this.removeBlock(b);
+      moveToNewParent(b, this.fusingGroup!);
       this.fusingGroup?.addBlock(b);
-
-      b.parent.toLocal(new Point(oldPos.x, oldPos.y), undefined, b.position);
       b.addToGroup(this.fusingGroup!);
     });
 

@@ -4,7 +4,6 @@ import { GroupingApplication } from "./classes/GroupingApplication";
 import "./style.css";
 
 const app = new GroupingApplication({
-  background: "#333",
   antialias: true,
   view: document.querySelector("canvas")!,
 });
