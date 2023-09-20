@@ -1,8 +1,8 @@
 {
   "name": "@riskchallenger/pixi-grouping",
   "version": "1.0.1",
-  "private": false,
   "author": "RiskChallenger <info@riskchallenger.nl> (https://riskchallenger.nl)",
+  "private": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
