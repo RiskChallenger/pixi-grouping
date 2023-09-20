@@ -6,6 +6,7 @@ import {
   ITextStyle,
   Point,
 } from "pixi.js";
+import { moveToNewParent } from "../helpers";
 import { Block } from "./Block";
 import { Group } from "./Group";
 
@@ -74,16 +75,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     block.parent.toLocal(middleOfBlock, undefined, block.position);
     this.groups.find((g) => {
       if (g.isNearMembers(block)) {
-        const oldPos = block.getBounds();
-        // Spawned inside a group
-        this.viewport.removeChild(block);
+        moveToNewParent(block, g);
         g.addBlock(block);
         block.addToGroup(g);
-        block.parent.toLocal(
-          new Point(oldPos.x, oldPos.y),
-          undefined,
-          block.position
-        );
         g.updateBoundary(false);
         return true;
       }
@@ -156,9 +150,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
     if (active?.hasFusingGroup()) {
       if (active instanceof Block) {
-        const oldPos = active.getBounds();
-        this.viewport.removeChild(active);
-        active.fuse(oldPos);
+        active.fuse();
         this.looseBlocks = this.looseBlocks.filter((b) => b !== active);
       }
       if (active instanceof Group) {
