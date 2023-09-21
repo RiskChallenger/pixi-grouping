@@ -13,7 +13,7 @@ import { Group } from "./Group";
 export class Block extends DragContainer {
   protected blockGraphic = new Graphics();
   protected overlayFilter = new DropShadowFilter({
-    color: 0xffffff,
+    color: this.styleService.getShadowColor(),
     blur: 5,
     quality: 10,
     resolution: 10,
@@ -31,6 +31,9 @@ export class Block extends DragContainer {
 
   constructor(x = 0, y = 0, fillColor: number | string = "#fff") {
     super();
+    this.styleService.on("changed-shadow-color", (newColor: number) => {
+      this.overlayFilter.color = newColor;
+    });
 
     this.fillColor = fillColor;
     this.createBlockGraphic();
@@ -59,7 +62,7 @@ export class Block extends DragContainer {
     super.pointerup();
   }
 
-  public drag(point: Point, easeTime = 0) {
+  public drag(point: Point) {
     if (this.nearFusingBlock()) {
       this.fusingBlock?.setBoundaryExtension(this.getBounds());
       this.fusingBlock?.updateBoundary();
@@ -69,7 +72,7 @@ export class Block extends DragContainer {
       this.group?.updateBoundary(false);
     }
 
-    super.drag(point, easeTime);
+    super.drag(point);
   }
 
   protected getCustomBounds(): Rectangle {
@@ -89,6 +92,32 @@ export class Block extends DragContainer {
 
   public nearGroup(): boolean {
     return this.group?.isNearMembers(this) ?? false;
+  }
+
+  public addToGroup(group: Group): void {
+    this.hideBoundary();
+    this.unsetFusingBlock();
+    this.group = group;
+    this.group.updateBoundary();
+    this.emit("joined-group", this.group);
+  }
+
+  public removeFromGroup(): void {
+    this.group = null;
+    this.awayFromGroup = false;
+    this.emit("left-group");
+  }
+
+  public setAwayFromGroup(): void {
+    this.awayFromGroup = true;
+  }
+
+  public unsetAwayFromGroup(): void {
+    this.awayFromGroup = false;
+  }
+
+  public isAwayFromGroup(): boolean {
+    return this.awayFromGroup;
   }
 
   public setFusingBlock(block: Block): void {
@@ -180,31 +209,6 @@ export class Block extends DragContainer {
 
   public hideHighlight(): void {
     this.filters?.pop();
-  }
-
-  public addToGroup(group: Group): void {
-    this.hideBoundary();
-    this.group = group;
-    this.group.updateBoundary();
-    this.emit("joined-group", this.group);
-  }
-
-  public removeFromGroup(): void {
-    this.group = null;
-    this.awayFromGroup = false;
-    this.emit("left-group");
-  }
-
-  public setAwayFromGroup(): void {
-    this.awayFromGroup = true;
-  }
-
-  public unsetAwayFromGroup(): void {
-    this.awayFromGroup = false;
-  }
-
-  public isAwayFromGroup(): boolean {
-    return this.awayFromGroup;
   }
 
   protected createBlockGraphic(): void {

@@ -7,18 +7,21 @@ export class Group extends DragContainer {
   protected nameText: Text;
   protected DEFAULT_ZINDEX = 1;
 
-  constructor(
-    name: string,
-    blocks: Block[] = [],
-    nameStyle: Partial<ITextStyle> = { fill: "#fff" }
-  ) {
+  constructor(name: string, blocks: Block[] = []) {
     super();
+    this.styleService.on(
+      "changed-groupname-style",
+      (newStyle: Partial<ITextStyle>) => {
+        this.nameText.style = newStyle;
+      }
+    );
+
     this.sortableChildren = true;
     this.blocks = blocks;
     this.addChild(...blocks);
 
     const bounds = this.getBounds();
-    this.nameText = new Text(name, nameStyle);
+    this.nameText = new Text(name, this.styleService.getGroupNameStyle());
     const textPos = new Point(
       bounds.x + bounds.width / 2 - this.nameText.width / 2,
       bounds.y - 60
@@ -34,13 +37,13 @@ export class Group extends DragContainer {
     this.zIndex = this.DEFAULT_ZINDEX;
   }
 
-  public drag(point: Point, easeTime = 0) {
+  public drag(point: Point) {
     if (this.nearFusingGroup()) {
       this.hideText();
     } else {
       this.showText();
     }
-    super.drag(point, easeTime);
+    super.drag(point);
   }
 
   public addBlock(block: Block) {
@@ -52,7 +55,6 @@ export class Group extends DragContainer {
 
   public removeBlock(block: Block) {
     this.blocks = this.blocks.filter((b) => b !== block);
-    this.removeChild(block);
     this.updateBoundary();
     this.emit("block-removed", block);
   }
@@ -128,14 +130,6 @@ export class Group extends DragContainer {
     super.destroy();
   }
 
-  private hideText(): void {
-    this.nameText.visible = false;
-  }
-
-  private showText(): void {
-    this.nameText.visible = true;
-  }
-
   public updateBoundary(visible = true): void {
     super.updateBoundary(visible);
     const bounds = this.getBounds();
@@ -152,5 +146,13 @@ export class Group extends DragContainer {
     if (this.blocks.filter((b) => !b.isAwayFromGroup()).length === 1) {
       this.nameText.visible = false;
     }
+  }
+
+  private hideText(): void {
+    this.nameText.visible = false;
+  }
+
+  private showText(): void {
+    this.nameText.visible = true;
   }
 }

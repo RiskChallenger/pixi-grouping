@@ -7,8 +7,11 @@ import {
   Rectangle,
 } from "pixi.js";
 import { Group } from "./Group";
+import { StyleService } from "./StyleService";
 
 export class DragContainer extends Container {
+  protected styleService: StyleService;
+
   protected boundaryGraphic = new Graphics();
   protected relativeMousePosition: Point = new Point();
   protected dragged = false;
@@ -25,7 +28,11 @@ export class DragContainer extends Container {
 
   constructor() {
     super();
+    this.styleService = StyleService.getInstance();
     this.createBoundaryGraphic();
+    this.styleService.on("changed-border-color", () => {
+      this.updateBoundary(false);
+    });
     this.addChild(this.boundaryGraphic);
     this.zIndex = this.DEFAULT_ZINDEX;
   }
@@ -44,7 +51,7 @@ export class DragContainer extends Container {
     this.zIndex = 100;
   }
 
-  public drag(point: Point, easeTime = 0) {
+  public drag(point: Point) {
     this.dragged = this.active;
     if (this.nearFusingGroup()) {
       this.fusingGroup?.setBoundaryExtension(this.getBounds());
@@ -57,10 +64,11 @@ export class DragContainer extends Container {
     );
 
     const newPosition = this.parent.toLocal(pos, undefined);
-    this.move(newPosition, easeTime);
+
+    this.moveTo(newPosition);
   }
 
-  public move(point: Point, easeTime = 0) {
+  public moveTo(point: Point, easeTime = 0) {
     if (easeTime > 0) {
       ease.add(
         this,
@@ -161,9 +169,9 @@ export class DragContainer extends Container {
     return super.getBounds();
   }
 
-  private createBoundaryGraphic(visible = false): void {
+  protected createBoundaryGraphic(visible = false): void {
     const indicatorMargin = 150;
-    this.boundaryGraphic.lineStyle(1, "#fff");
+    this.boundaryGraphic.lineStyle(1, this.styleService.getBorderColor());
     this.boundaryGraphic.beginFill("#ffffff", 0);
 
     const bounds = this.getBounds();

@@ -1,5 +1,9 @@
 @import "@riskchallenger/open-components/main.css";
 
+html {
+  --brand: var(--gray-9);
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -17,4 +21,10 @@ body {
   position: absolute;
   left: var(--size-3);
   top: var(--size-3);
+}
+
+#lightdark {
+  position: absolute;
+  top: var(--size-3);
+  right: var(--size-3);
 }
