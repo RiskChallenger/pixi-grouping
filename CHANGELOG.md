@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.0.2...v1.1.0) (2023-09-21)
+
+
+### Features
+
+* add adjustable styling and rmb-event ([5976544](https://github.com/RiskChallenger/pixi-grouping/commit/5976544823b9a0d5f698feb90f80f8405463157e))
+
 ## [1.0.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.0.1...v1.0.2) (2023-09-20)
 
 
