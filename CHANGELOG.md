@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.0...v1.1.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* publish correct files and types ([932cbff](https://github.com/RiskChallenger/pixi-grouping/commit/932cbff541a9f55c8e097188204dc173bae68423))
+
 # [1.1.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.0.2...v1.1.0) (2023-09-21)
 
 
