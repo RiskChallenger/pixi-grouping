@@ -5,7 +5,7 @@
   "private": false,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --p ./tsconfig-build.json && vite build",
     "preview": "vite preview",
     "semantic-release": "semantic-release"
   },
@@ -25,19 +25,19 @@
     "vite": "^4.4.5",
     "vite-plugin-dts": "^3.5.3"
   },
+  "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/pixi_grouping.umd.cjs",
-  "module": "./dist/pixi_grouping.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/pixi-grouping.umd.cjs",
+  "module": "./dist/pixi-grouping.js",
   "exports": {
     ".": {
-      "import": "./dist/pixi_grouping.js",
-      "require": "./dist/pixi_grouping.umd.cjs"
+      "import": "./dist/pixi-grouping.js",
+      "require": "./dist/pixi-grouping.umd.cjs",
+      "types": "./dist/main.d.ts"
     }
   },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/RiskChallenger/pixi-grouping.git"

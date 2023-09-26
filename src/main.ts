@@ -1,7 +1,7 @@
 import { FederatedPointerEvent, Point } from "pixi.js";
-import { Block } from "./classes/Block";
-import { GroupingApplication } from "./classes/GroupingApplication";
 import "./style.css";
+
+import { Block, GroupingApplication } from "../lib/main";
 
 const app = new GroupingApplication({
   antialias: true,
