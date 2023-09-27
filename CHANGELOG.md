@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.1...v1.1.2) (2023-09-27)
+
+
+### Bug Fixes
+
+* dont ship with pixi ([3b6c237](https://github.com/RiskChallenger/pixi-grouping/commit/3b6c23758df4827a4bf00dfc32561bc95f9c28ba))
+
 ## [1.1.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.0...v1.1.1) (2023-09-26)
 
 
