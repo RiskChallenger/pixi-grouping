@@ -143,9 +143,9 @@ export class Group extends DragContainer {
     );
     this.nameText.x = pos.x;
     this.nameText.y = pos.y;
-    if (this.blocks.filter((b) => !b.isAwayFromGroup()).length === 1) {
-      this.nameText.visible = false;
-    }
+
+    this.nameText.visible =
+      this.blocks.filter((b) => !b.isAwayFromGroup()).length > 1;
   }
 
   private hideText(): void {

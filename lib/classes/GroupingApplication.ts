@@ -1,6 +1,7 @@
 import { Viewport } from "pixi-viewport";
 import {
   Application,
+  DisplayObject,
   FederatedPointerEvent,
   IApplicationOptions,
   Point,
@@ -100,6 +101,10 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     if (!block.hasGroup()) {
       this.looseBlocks.push(block);
     }
+  }
+
+  public addChild(...children: DisplayObject[]): DisplayObject {
+    return this.viewport.addChild(...children);
   }
 
   public panToHome(): void {
