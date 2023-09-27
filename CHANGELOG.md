@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.2...v1.1.3) (2023-09-27)
+
+
+### Bug Fixes
+
+* show group name in all correct situations ([1158080](https://github.com/RiskChallenger/pixi-grouping/commit/11580807a620f4d95fedcf1ea3ee7b05bb1497d1)), closes [#12](https://github.com/RiskChallenger/pixi-grouping/issues/12)
+
 ## [1.1.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.1...v1.1.2) (2023-09-27)
 
 
