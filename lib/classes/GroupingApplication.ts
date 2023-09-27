@@ -33,8 +33,8 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     });
 
     this.viewport = new Viewport({
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
+      screenWidth: this.screen.width,
+      screenHeight: this.screen.height,
       events: this.renderer.events,
       passiveWheel: false,
     });

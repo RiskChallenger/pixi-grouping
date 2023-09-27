@@ -9,14 +9,15 @@
     "preview": "vite preview",
     "semantic-release": "semantic-release"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "pixi.js": "^7.3.0"
+  },
+  "devDependencies": {
     "eventemitter3": "^5.0.1",
     "pixi-ease": "^3.0.6",
     "pixi-filters": "^5.2.1",
     "pixi-viewport": "^5.0.2",
-    "pixi.js": "^7.3.0"
-  },
-  "devDependencies": {
+    "pixi.js": "^7.3.0",
     "@riskchallenger/open-components": "^1.6.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
