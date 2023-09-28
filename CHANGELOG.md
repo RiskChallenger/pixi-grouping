@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.3...v1.1.4) (2023-09-28)
+
+
+### Bug Fixes
+
+* publish latest version correctly ([659110c](https://github.com/RiskChallenger/pixi-grouping/commit/659110ca0ffee0543b7b11040d06c675bf977597))
+
 ## [1.1.3](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.2...v1.1.3) (2023-09-27)
 
 
