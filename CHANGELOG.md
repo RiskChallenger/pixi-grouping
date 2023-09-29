@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.4...v1.2.0) (2023-09-29)
+
+
+### Features
+
+* make pointerdown event agnostic ([00942cb](https://github.com/RiskChallenger/pixi-grouping/commit/00942cb14d49375efb7f3eca60df6b426c967360))
+
 ## [1.1.4](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.3...v1.1.4) (2023-09-28)
 
 
