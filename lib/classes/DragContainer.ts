@@ -1,11 +1,5 @@
 import { ease } from "pixi-ease";
-import {
-  Container,
-  FederatedPointerEvent,
-  Graphics,
-  Point,
-  Rectangle,
-} from "pixi.js";
+import { Container, Graphics, Point, Rectangle } from "pixi.js";
 import { Group } from "./Group";
 import { StyleService } from "./StyleService";
 
@@ -45,8 +39,8 @@ export class DragContainer extends Container {
     this.resetZIndex();
   }
 
-  public pointerdown(e: FederatedPointerEvent): void {
-    this.setRelativeMousePosition(e.global);
+  public pointerdown(p: Point): void {
+    this.setRelativeMousePosition(p);
     this.active = true;
     this.zIndex = 100;
   }

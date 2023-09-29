@@ -58,3 +58,19 @@ document.querySelector("#lightdark")?.addEventListener("click", () => {
     backgroundColor: 0x333333,
   });
 });
+
+let clicky = false;
+
+document.querySelector("body")?.addEventListener("mousedown", () => {
+  clicky = true;
+});
+document.querySelector("body")?.addEventListener("mouseup", () => {
+  clicky = false;
+});
+document.querySelector("canvas")?.addEventListener("mouseenter", (e) => {
+  if (clicky) {
+    const newRisk = new Block(e.offsetX, e.offsetY, 0xffaa00);
+    app.addBlock(newRisk);
+    newRisk.pointerdown(new Point(e.offsetX, e.offsetY));
+  }
+});

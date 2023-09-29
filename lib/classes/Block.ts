@@ -1,11 +1,5 @@
 import { DropShadowFilter } from "pixi-filters";
-import {
-  FederatedPointerEvent,
-  Filter,
-  Graphics,
-  Point,
-  Rectangle,
-} from "pixi.js";
+import { Filter, Graphics, Point, Rectangle } from "pixi.js";
 import { distanceBetweenPoints, moveToNewParent } from "../helpers";
 import { DragContainer } from "./DragContainer";
 import { Group } from "./Group";
@@ -40,7 +34,7 @@ export class Block extends DragContainer {
     this.updateBoundary(false);
     this.eventMode = "static";
     this.cursor = "pointer";
-    this.on("pointerdown", this.pointerdown, this);
+    this.on("pointerdown", (e) => this.pointerdown(e.global), this);
 
     this.overlayFilter.padding = 30;
 
@@ -48,11 +42,11 @@ export class Block extends DragContainer {
     this.y = y;
   }
 
-  public pointerdown(e: FederatedPointerEvent): void {
+  public pointerdown(p: Point): void {
     if (this.group) {
       this.group.zIndex = 100;
     }
-    super.pointerdown(e);
+    super.pointerdown(p);
   }
 
   public pointerup(): void {
