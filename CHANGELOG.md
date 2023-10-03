@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.2.0...v1.2.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* export styleservice ([c1b10d1](https://github.com/RiskChallenger/pixi-grouping/commit/c1b10d10803eb26816404abc2a539279b61517df))
+
 # [1.2.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.1.4...v1.2.0) (2023-09-29)
 
 
