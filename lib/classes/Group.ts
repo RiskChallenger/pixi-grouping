@@ -9,12 +9,6 @@ export class Group extends DragContainer {
 
   constructor(name: string, blocks: Block[] = []) {
     super();
-    this.styleService.on(
-      "changed-groupname-style",
-      (newStyle: Partial<ITextStyle>) => {
-        this.nameText.style = newStyle;
-      }
-    );
 
     this.sortableChildren = true;
     this.blocks = blocks;
@@ -35,6 +29,13 @@ export class Group extends DragContainer {
     this.nameText.on("pointerdown", (e) => this.pointerdown(e.global), this);
 
     this.zIndex = this.DEFAULT_ZINDEX;
+
+    this.stopListeners.push(
+      this.styleService.on(
+        "changed-groupname-style",
+        (newStyle: Partial<ITextStyle>) => (this.nameText.style = newStyle)
+      )
+    );
   }
 
   public drag(point: Point) {
@@ -148,11 +149,11 @@ export class Group extends DragContainer {
       this.blocks.filter((b) => !b.isAwayFromGroup()).length > 1;
   }
 
-  private hideText(): void {
+  protected hideText(): void {
     this.nameText.visible = false;
   }
 
-  private showText(): void {
+  protected showText(): void {
     this.nameText.visible = true;
   }
 }

@@ -1,3 +1,4 @@
+import { Unsubscribe } from "nanoevents";
 import { ease } from "pixi-ease";
 import { Container, Graphics, Point, Rectangle } from "pixi.js";
 import { Group } from "./Group";
@@ -10,6 +11,7 @@ export class DragContainer extends Container {
   protected relativeMousePosition: Point = new Point();
   protected dragged = false;
   protected DEFAULT_ZINDEX = 0;
+  protected stopListeners: Unsubscribe[] = [];
 
   // True if the mouse is currently pressed down on this
   protected active = false;
@@ -24,9 +26,11 @@ export class DragContainer extends Container {
     super();
     this.styleService = StyleService.getInstance();
     this.createBoundaryGraphic();
-    this.styleService.on("changed-border-color", () => {
-      this.updateBoundary(false);
-    });
+    this.stopListeners.push(
+      this.styleService.on("changed-border-color", () =>
+        this.updateBoundary(false)
+      )
+    );
     this.addChild(this.boundaryGraphic);
     this.zIndex = this.DEFAULT_ZINDEX;
   }
@@ -157,6 +161,11 @@ export class DragContainer extends Container {
 
   public resetZIndex(): void {
     this.zIndex = this.DEFAULT_ZINDEX;
+  }
+
+  public destroy(): void {
+    this.stopListeners.forEach((f) => f());
+    super.destroy();
   }
 
   protected getCustomBounds(): Rectangle {

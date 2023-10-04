@@ -13,14 +13,15 @@
     "pixi.js": "^7.3.0"
   },
   "devDependencies": {
+    "@riskchallenger/open-components": "^1.6.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "eventemitter3": "^5.0.1",
+    "nanoevents": "^8.0.0",
     "pixi-ease": "^3.0.6",
     "pixi-filters": "^5.2.1",
     "pixi-viewport": "^5.0.2",
     "pixi.js": "^7.3.0",
-    "@riskchallenger/open-components": "^1.6.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
     "semantic-release": "^22.0.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",

@@ -29,9 +29,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
 
     this.styleService = StyleService.getInstance();
     this.styleService.setStyles(options);
-    this.styleService.on("changed-background-color", (newColor: number) => {
-      this.renderer.background.color = newColor;
-    });
+
+    this.styleService.on(
+      "changed-background-color",
+      (color: number) => (this.renderer.background.color = color)
+    );
 
     this.viewport = new Viewport({
       screenWidth: this.screen.width,

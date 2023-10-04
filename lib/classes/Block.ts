@@ -25,9 +25,12 @@ export class Block extends DragContainer {
 
   constructor(x = 0, y = 0, fillColor: number | string = "#fff") {
     super();
-    this.styleService.on("changed-shadow-color", (newColor: number) => {
-      this.overlayFilter.color = newColor;
-    });
+    this.stopListeners.push(
+      this.styleService.on(
+        "changed-shadow-color",
+        (color: number) => (this.overlayFilter.color = color)
+      )
+    );
 
     this.fillColor = fillColor;
     this.createBlockGraphic();
