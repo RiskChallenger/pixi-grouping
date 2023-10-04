@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.2.1...v1.2.2) (2023-10-04)
+
+
+### Bug Fixes
+
+* remove event listeners when groups are removed ([52faab0](https://github.com/RiskChallenger/pixi-grouping/commit/52faab0a055a96cfc7f2f22d63b5dc18f0353903))
+
 ## [1.2.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.2.0...v1.2.1) (2023-10-03)
 
 
