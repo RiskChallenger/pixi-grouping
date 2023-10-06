@@ -41,6 +41,9 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       events: this.renderer.events,
       passiveWheel: false,
     });
+    // Put viewport above other items by default
+    this.stage.sortableChildren = true;
+    this.viewport.zIndex = 0.1;
     this.viewport.sortableChildren = true;
     this.viewport.drag({ wheel: false });
     this.viewport.decelerate();

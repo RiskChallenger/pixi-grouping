@@ -5,7 +5,7 @@ import { Group } from "./Group";
 import { StyleService } from "./StyleService";
 
 export class DragContainer extends Container {
-  protected styleService: StyleService;
+  protected styleService = StyleService.getInstance();
 
   protected boundaryGraphic = new Graphics();
   protected relativeMousePosition: Point = new Point();
@@ -24,7 +24,6 @@ export class DragContainer extends Container {
 
   constructor() {
     super();
-    this.styleService = StyleService.getInstance();
     this.createBoundaryGraphic();
     this.stopListeners.push(
       this.styleService.on("changed-border-color", () =>
