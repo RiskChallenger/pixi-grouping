@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.2.2...v1.3.0) (2023-10-06)
+
+
+### Features
+
+* put other DisplayObjects behind viewport by default ([13465b3](https://github.com/RiskChallenger/pixi-grouping/commit/13465b39d7248796109c8bfb47f57fb6c5e83df7))
+
 ## [1.2.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.2.1...v1.2.2) (2023-10-04)
 
 
