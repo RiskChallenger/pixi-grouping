@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.3.0...v1.4.0) (2023-10-09)
+
+
+### Features
+
+* add drag event on dragcontainer ([c51a744](https://github.com/RiskChallenger/pixi-grouping/commit/c51a744317db6073b50d84afa3bd7dd757fb63b7))
+
 # [1.3.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.2.2...v1.3.0) (2023-10-06)
 
 
