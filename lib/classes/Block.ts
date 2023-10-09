@@ -96,13 +96,13 @@ export class Block extends DragContainer {
     this.unsetFusingBlock();
     this.group = group;
     this.group.updateBoundary();
-    this.emit("joined-group", this.group);
+    this.emit("join-group", this.group);
   }
 
   public removeFromGroup(): void {
     this.group = null;
     this.awayFromGroup = false;
-    this.emit("left-group");
+    this.emit("leave-group");
   }
 
   public setAwayFromGroup(): void {

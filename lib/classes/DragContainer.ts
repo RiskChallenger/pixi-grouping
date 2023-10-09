@@ -63,6 +63,7 @@ export class DragContainer extends Container {
     const newPosition = this.parent.toLocal(pos, undefined);
 
     this.moveTo(newPosition);
+    this.emit("drag", pos);
   }
 
   public moveTo(point: Point, easeTime = 0) {

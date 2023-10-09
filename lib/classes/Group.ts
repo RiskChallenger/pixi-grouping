@@ -51,13 +51,13 @@ export class Group extends DragContainer {
     this.blocks.push(block);
     this.addChild(block);
     this.updateBoundary();
-    this.emit("block-added", block);
+    this.emit("block-add", block);
   }
 
   public removeBlock(block: Block) {
     this.blocks = this.blocks.filter((b) => b !== block);
     this.updateBoundary();
-    this.emit("block-removed", block);
+    this.emit("block-remove", block);
   }
 
   public getLength(): number {
@@ -76,7 +76,7 @@ export class Group extends DragContainer {
       bounds.y - 60
     );
     this.nameText.parent.toLocal(textPos, undefined, this.nameText.position);
-    this.emit("name-changed", name);
+    this.emit("name-change", name);
   }
 
   public isNearMembers(other: DragContainer): boolean {
@@ -127,7 +127,7 @@ export class Group extends DragContainer {
   }
 
   public destroy(): void {
-    this.emit("disbandoned");
+    this.emit("disbandon");
     super.destroy();
   }
 

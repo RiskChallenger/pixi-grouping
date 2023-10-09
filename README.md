@@ -30,17 +30,18 @@ This events can be accessed through `application.stage.on('<event>')`.
 
 ### Block events
 
-- `joined-group`
-- `left-group`
+- `join-group`
+- `leave-group`
 - `no-drag-click` - when clicking on a block and not dragging it
 - `overlay` - when overlaying another block, contains the other block in the event
+- `drag`
 
 ### Group events
 
-- `block-added`
-- `block-removed`
-- `name-changed`
-- `disbandoned` - this event is emitted when the last two risks in a group are separated
+- `block-add`
+- `block-remove`
+- `name-change`
+- `disbandon` - this event is emitted when the last two risks in a group are separated
 - `no-drag-click` - when clicking on the name of a group and not dragging it
 
 ## Development
