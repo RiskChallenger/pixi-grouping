@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.4.0...v1.5.0) (2023-10-23)
+
+
+### Features
+
+* add home smoothing ([d9c95b7](https://github.com/RiskChallenger/pixi-grouping/commit/d9c95b79832fff59acc7cd2bea3f6b4a01baec82))
+
 # [1.4.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.3.0...v1.4.0) (2023-10-09)
 
 
