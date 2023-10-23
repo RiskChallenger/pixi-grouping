@@ -60,6 +60,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.viewport.on("rightdown", this.rightclick, this);
 
     this.stage.addChild(this.viewport);
+
+    window.addEventListener("load", () => {
+      this.resizeCanvas(this.screen.width, this.screen.height);
+      this.viewport.moveCenter(0, 0);
+    });
   }
 
   public addBlocks(blocks: Block[]) {
@@ -113,7 +118,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   }
 
   public panToHome(): void {
-    this.viewport.moveCenter(0, 0);
+    this.viewport.animate({
+      removeOnInterrupt: true,
+      position: { x: 0, y: 0 },
+      time: 500,
+    });
   }
 
   public getLocations(): Point[] {
