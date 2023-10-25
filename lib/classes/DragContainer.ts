@@ -106,6 +106,9 @@ export class DragContainer extends Container {
   public hideBoundary(): void {
     this.boundaryGraphic.visible = false;
   }
+  public hasBoundary(): boolean {
+    return this.boundaryGraphic.visible;
+  }
 
   public updateBoundary(visible = true): void {
     this.boundaryGraphic.clear();

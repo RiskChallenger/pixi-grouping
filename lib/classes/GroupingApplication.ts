@@ -282,10 +282,10 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
             return true;
           }
         });
-      if (!isOverlaying) {
+      if (!isOverlaying && active.hasOverlayBlock()) {
         active.unsetOverlayBlock();
       }
-      if (active.nearFusing()) {
+      if (active.nearFusing() && active.hasBoundary()) {
         active.hideBoundary();
       }
     }
