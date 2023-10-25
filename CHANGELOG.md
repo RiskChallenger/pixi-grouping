@@ -1,3 +1,10 @@
+## [1.5.5](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.4...v1.5.5) (2023-10-25)
+
+
+### Bug Fixes
+
+* unset overlayBlock after emitting overlay event ([339c940](https://github.com/RiskChallenger/pixi-grouping/commit/339c940a9f88c2148acf28ba603639e31ee7ae4c))
+
 ## [1.5.4](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.3...v1.5.4) (2023-10-25)
 
 
