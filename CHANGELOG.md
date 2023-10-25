@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.2...v1.5.3) (2023-10-25)
+
+
+### Bug Fixes
+
+* improve handling of destroyed blocks and groups ([3bd7367](https://github.com/RiskChallenger/pixi-grouping/commit/3bd7367b923b7dca4eb13091c346a5eed4554988))
+
 ## [1.5.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.1...v1.5.2) (2023-10-25)
 
 
