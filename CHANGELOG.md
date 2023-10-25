@@ -1,3 +1,10 @@
+## [1.5.4](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.3...v1.5.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* prevent crashing when block is destroyed in pointerup ([f444e65](https://github.com/RiskChallenger/pixi-grouping/commit/f444e654ccf81ab33b0af7bdbe1ed07741f34c8d))
+
 ## [1.5.3](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.2...v1.5.3) (2023-10-25)
 
 
