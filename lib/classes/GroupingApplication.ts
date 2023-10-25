@@ -76,7 +76,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
    * @param block Block to be added
    * @param point Location to add the block to
    */
-  public addBlock(block: Block) {
+  public addBlock(block: Block): void {
     this.blocks.push(block);
     this.viewport.addChild(block);
     const middleOfBlock = new Point(
@@ -102,7 +102,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
         block.addToGroup(newGroup);
         // Block no longer loose
         this.looseBlocks = this.looseBlocks.filter((b) => b !== lb);
-        this.groups.push(newGroup);
+        this.addGroup(newGroup);
         newGroup.updateBoundary(false);
 
         return true;
@@ -111,10 +111,35 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     if (!block.hasGroup()) {
       this.looseBlocks.push(block);
     }
+
+    block.on("destroyed", () => {
+      this.blocks = this.blocks.filter((b) => b !== block);
+      if (block.hasGroup() && block.getGroup()?.getLength() === 2) {
+        const group = block.getGroup()!;
+        group.removeBlock(block);
+        this.groups = this.groups.filter((g) => g !== group);
+        const lastMember = group.getOnlyMember();
+
+        moveToNewParent(lastMember, this.viewport);
+        this.viewport.addChild(lastMember);
+
+        group.destroy();
+        lastMember.removeFromGroup();
+        this.looseBlocks.push(lastMember);
+      }
+    });
   }
 
   public addChild(...children: DisplayObject[]): DisplayObject {
     return this.viewport.addChild(...children);
+  }
+
+  public addGroup(group: Group): void {
+    this.groups.push(group);
+    this.stage.emit("new-group", group);
+    group.on("destroyed", () => {
+      this.groups = this.groups.filter((g) => g !== group);
+    });
   }
 
   public panToHome(): void {
@@ -148,7 +173,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
 
       // If the group only has 1 member left, disbandon it
       if (formerGroup?.getLength() === 1) {
-        this.groups = this.groups.filter((g) => g !== formerGroup);
         const lastMember = formerGroup.getOnlyMember();
 
         moveToNewParent(lastMember, this.viewport);
@@ -166,7 +190,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       }
       if (active instanceof Group) {
         active.fuse();
-        this.groups = this.groups.filter((g) => g !== active);
       }
     }
     if (active instanceof Block && active.hasFusingBlock()) {
@@ -178,8 +201,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       this.looseBlocks = this.looseBlocks.filter(
         (b) => b !== active && b !== fusingBlock
       );
-      this.groups.push(newGroup);
-      this.stage.emit("new-group", newGroup);
+      this.addGroup(newGroup);
     }
     if (active instanceof Block && active.hasOverlayBlock()) {
       active.overlay();
