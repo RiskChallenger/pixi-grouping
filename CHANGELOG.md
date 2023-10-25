@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.0...v1.5.1) (2023-10-25)
+
+
+### Bug Fixes
+
+* hide highlight and boundary only when necessary ([5bdab4d](https://github.com/RiskChallenger/pixi-grouping/commit/5bdab4de61aab5c7f882d19076573e74242dd978))
+
 # [1.5.0](https://github.com/RiskChallenger/pixi-grouping/compare/v1.4.0...v1.5.0) (2023-10-23)
 
 
