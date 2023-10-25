@@ -161,6 +161,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
   protected pointerup(): void {
     const active = this.getActive();
     active?.pointerup();
+    // Could get destroyed in pointerup
+    if (active?.destroyed) {
+      return;
+    }
+
     if (active instanceof Block && active.isAwayFromGroup()) {
       const formerGroup = active.getGroup();
 
