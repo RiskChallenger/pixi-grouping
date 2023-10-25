@@ -39,7 +39,12 @@ export class Block extends DragContainer {
     this.cursor = "pointer";
     this.on("pointerdown", (e) => this.pointerdown(e.global), this);
 
-    this.overlayFilter.padding = 30;
+    if (!this.filters) {
+      this.filters = [];
+    }
+    this.filters.push(this.overlayFilter as unknown as Filter);
+    this.overlayFilter.padding = 100;
+    this.overlayFilter.enabled = false;
 
     this.x = x;
     this.y = y;
@@ -201,11 +206,11 @@ export class Block extends DragContainer {
   }
 
   public showHighlight(): void {
-    this.filters = [this.overlayFilter as unknown as Filter];
+    this.overlayFilter.enabled = true;
   }
 
   public hideHighlight(): void {
-    this.filters?.pop();
+    this.overlayFilter.enabled = false;
   }
 
   protected createBlockGraphic(): void {
