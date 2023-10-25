@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.1...v1.5.2) (2023-10-25)
+
+
+### Bug Fixes
+
+* simplify filter usage for better extendability ([85958a6](https://github.com/RiskChallenger/pixi-grouping/commit/85958a66083ba97f4129bbd1c2b11b6edf7a2bb6))
+
 ## [1.5.1](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.0...v1.5.1) (2023-10-25)
 
 
