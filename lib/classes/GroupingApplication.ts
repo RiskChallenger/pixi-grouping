@@ -210,6 +210,7 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     }
     if (active instanceof Block && active.hasOverlayBlock()) {
       active.overlay();
+      active.unsetOverlayBlock();
     }
     this.blocks.forEach((b) => {
       b.end();
