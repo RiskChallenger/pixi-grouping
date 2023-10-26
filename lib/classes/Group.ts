@@ -26,7 +26,14 @@ export class Group extends DragContainer {
     this.updateBoundary();
     this.nameText.cursor = "pointer";
     this.nameText.eventMode = "static";
-    this.nameText.on("pointerdown", (e) => this.pointerdown(e.global), this);
+    this.nameText.on(
+      "pointerdown",
+      (e) => {
+        e.stopPropagation();
+        this.pointerdown(e.global);
+      },
+      this
+    );
 
     this.zIndex = this.DEFAULT_ZINDEX;
 

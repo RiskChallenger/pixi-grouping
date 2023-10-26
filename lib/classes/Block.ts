@@ -37,7 +37,14 @@ export class Block extends DragContainer {
     this.updateBoundary(false);
     this.eventMode = "static";
     this.cursor = "pointer";
-    this.on("pointerdown", (e) => this.pointerdown(e.global), this);
+    this.on(
+      "pointerdown",
+      (e) => {
+        e.stopPropagation();
+        this.pointerdown(e.global);
+      },
+      this
+    );
 
     if (!this.filters) {
       this.filters = [];
@@ -206,6 +213,7 @@ export class Block extends DragContainer {
   }
 
   public showHighlight(): void {
+    // TODO remove highlights for performance, maybe transparent layer on top and show merge/delete icon
     this.overlayFilter.enabled = true;
   }
 

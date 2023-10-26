@@ -1,3 +1,4 @@
+import { isWebGLSupported } from "@pixi/utils";
 import { FederatedPointerEvent, Point } from "pixi.js";
 import "./style.css";
 
@@ -29,6 +30,8 @@ const blocks = [
   new Block(800, 300, 0xff00ff), //pink
 ];
 app.addBlocks(blocks);
+
+console.log(isWebGLSupported());
 
 app.stage.on("viewport-rightclick", (e: FederatedPointerEvent) => {
   const block = app.randomBlock();

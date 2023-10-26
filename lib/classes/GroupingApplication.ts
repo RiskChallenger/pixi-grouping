@@ -47,13 +47,13 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
     this.viewport.sortableChildren = true;
     this.viewport.drag({ wheel: false });
     this.viewport.decelerate();
+    this.viewport.moveCenter(0, 0);
 
     this.viewport.eventMode = "static";
     this.viewport.hitArea = this.screen;
-    this.viewport.moveCenter(0, 0);
     this.viewport.on("pointerup", this.pointerup, this);
     this.viewport.on("pointerupoutside", this.pointerup, this);
-    this.viewport.on("pointermove", this.mousemove, this);
+    this.viewport.on("pointermove", this.pointermove, this);
     this.view.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
@@ -221,14 +221,11 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       g.hideBoundary();
       g.end();
     });
-    this.resumeViewport();
   }
 
-  protected mousemove(e: FederatedPointerEvent): void {
+  protected pointermove(e: FederatedPointerEvent): void {
     const active = this.getActive();
     if (active) {
-      this.pauseViewport();
-
       active?.drag(e.global);
     }
     if (active instanceof Block) {
@@ -334,16 +331,6 @@ export class GroupingApplication extends Application<HTMLCanvasElement> {
       Math.max(110, Math.random() * (this.screen.height - 50)),
       Math.random() * 0xffffff
     );
-  }
-
-  private pauseViewport(): void {
-    this.viewport.plugins.pause("drag");
-    this.viewport.plugins.pause("wheel");
-  }
-
-  private resumeViewport(): void {
-    this.viewport.plugins.resume("drag");
-    this.viewport.plugins.resume("wheel");
   }
 
   private rightclick(e: FederatedPointerEvent): void {
