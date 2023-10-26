@@ -1,3 +1,10 @@
+## [1.5.6](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.5...v1.5.6) (2023-10-26)
+
+
+### Bug Fixes
+
+* prevent viewport activity when clicking blocks or groups ([2c5b3e9](https://github.com/RiskChallenger/pixi-grouping/commit/2c5b3e9b42f047b0d8ce88a89428a64e7bf64a4a))
+
 ## [1.5.5](https://github.com/RiskChallenger/pixi-grouping/compare/v1.5.4...v1.5.5) (2023-10-25)
 
 
