@@ -1,19 +1,10 @@
-import { DropShadowFilter } from "pixi-filters";
-import { Filter, Graphics, Point, Rectangle } from "pixi.js";
+import { Graphics, Point, Rectangle } from "pixi.js";
 import { distanceBetweenPoints, moveToNewParent } from "../helpers";
 import { DragContainer } from "./DragContainer";
 import { Group } from "./Group";
 
 export class Block extends DragContainer {
   protected blockGraphic = new Graphics();
-  protected overlayFilter = new DropShadowFilter({
-    color: this.styleService.getShadowColor(),
-    blur: 5,
-    quality: 10,
-    resolution: 10,
-    alpha: 0.8,
-    offset: { x: 0, y: 0 },
-  });
   protected fillColor: number | string;
   // The group this risk is a member of, if any
   protected group: Group | null = null;
@@ -25,12 +16,6 @@ export class Block extends DragContainer {
 
   constructor(x = 0, y = 0, fillColor: number | string = "#fff") {
     super();
-    this.stopListeners.push(
-      this.styleService.on(
-        "changed-shadow-color",
-        (color: number) => (this.overlayFilter.color = color)
-      )
-    );
 
     this.fillColor = fillColor;
     this.createBlockGraphic();
@@ -45,13 +30,6 @@ export class Block extends DragContainer {
       },
       this
     );
-
-    if (!this.filters) {
-      this.filters = [];
-    }
-    this.filters.push(this.overlayFilter as unknown as Filter);
-    this.overlayFilter.padding = 100;
-    this.overlayFilter.enabled = false;
 
     this.x = x;
     this.y = y;
@@ -213,13 +191,10 @@ export class Block extends DragContainer {
   }
 
   public showHighlight(): void {
-    // TODO remove highlights for performance, maybe transparent layer on top and show merge/delete icon
-    this.overlayFilter.enabled = true;
+    // TODO implement some highlight/indicator
   }
 
-  public hideHighlight(): void {
-    this.overlayFilter.enabled = false;
-  }
+  public hideHighlight(): void {}
 
   protected createBlockGraphic(): void {
     this.blockGraphic.beginFill(this.fillColor);
